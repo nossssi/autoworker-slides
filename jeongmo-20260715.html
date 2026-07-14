@@ -20,38 +20,47 @@
   .side span i{color:#B9C0C9;font-style:normal;font-weight:600}
   .hr{position:absolute;top:9vh;left:3.2vw;right:5.4vw;border-bottom:1px solid var(--line)}
   /* ── 타이포 ── */
-  .big{font-size:4.1vw;font-weight:800;line-height:1.42;text-align:center;word-break:keep-all;letter-spacing:-0.015em}
+  .big{font-size:4.8vw;font-weight:800;line-height:1.42;text-align:center;word-break:keep-all;letter-spacing:-0.015em}
   .big .g{color:var(--green)} .big .r{color:var(--red)}
-  .sub{font-size:1.75vw;color:var(--gray);font-weight:600;text-align:center;margin-top:4vh;word-break:keep-all;line-height:1.6}
-  .chapnum{font-size:6.2vw;font-weight:900;text-align:center;letter-spacing:-0.02em}
+  .sub{font-size:2.2vw;color:var(--gray);font-weight:600;text-align:center;margin-top:4vh;word-break:keep-all;line-height:1.6}
+  .chapnum{font-size:7vw;font-weight:900;text-align:center;letter-spacing:-0.02em}
   .chapnum::after{content:"";display:block;width:9vw;height:0.7vh;background:var(--green);margin:2.4vh auto 0}
-  .chaptitle{font-size:3.4vw;font-weight:800;text-align:center;margin-top:4.2vh;word-break:keep-all}
-  .badge{display:inline-block;background:var(--green);color:#fff;font-size:1.6vw;font-weight:800;padding:1.1vh 2vw;border-radius:999px}
-  .note{position:absolute;bottom:4.5vh;left:0;right:2.6vw;text-align:center;font-size:1.25vw;color:#AEB6C0;font-weight:600}
+  .chaptitle{font-size:4.2vw;font-weight:800;text-align:center;margin-top:4.2vh;word-break:keep-all}
+  .badge{display:inline-block;background:var(--green);color:#fff;font-size:2vw;font-weight:800;padding:1.1vh 2vw;border-radius:999px}
+  .note{position:absolute;bottom:4.5vh;left:0;right:2.6vw;text-align:center;font-size:1.6vw;color:#AEB6C0;font-weight:600}
   /* ── 표지 ── */
   .cover{align-items:flex-start;justify-content:center}
-  .cover .desc{font-size:1.9vw;font-weight:700;line-height:1.75;color:#3A4149;word-break:keep-all}
-  .cover .title{font-size:6.6vw;font-weight:900;color:var(--green);letter-spacing:-0.02em;line-height:1.18;margin:4.5vh 0 3.5vh}
+  .cover .desc{font-size:2.4vw;font-weight:700;line-height:1.75;color:#3A4149;word-break:keep-all}
+  .cover .title{font-size:7.4vw;font-weight:900;color:var(--green);letter-spacing:-0.02em;line-height:1.18;margin:4.5vh 0 3.5vh}
   /* ── 카드/리스트 ── */
   .cards{display:flex;gap:1.6vw;margin-top:2vh}
   .card{flex:1;border:2px solid var(--line);border-radius:18px;padding:3.6vh 1.8vw;background:#FBFCFD}
-  .card h4{font-size:1.35vw;color:var(--green-dark);font-weight:900;letter-spacing:.08em;margin-bottom:1.6vh}
-  .card .t{font-size:2vw;font-weight:800;line-height:1.4;word-break:keep-all;margin-bottom:2vh}
-  .card p{font-size:1.35vw;color:#5B6470;font-weight:600;line-height:1.7;word-break:keep-all}
+  .card h4{font-size:1.7vw;color:var(--green-dark);font-weight:900;letter-spacing:.08em;margin-bottom:1.6vh}
+  .card .t{font-size:2.5vw;font-weight:800;line-height:1.4;word-break:keep-all;margin-bottom:2vh}
+  .card p{font-size:1.65vw;color:#5B6470;font-weight:600;line-height:1.7;word-break:keep-all}
   ul.list{list-style:none;width:100%}
-  ul.list li{font-size:2.15vw;font-weight:700;padding:2.2vh 0 2.2vh 3.4vw;position:relative;border-bottom:1px solid var(--line);word-break:keep-all;line-height:1.45}
+  ul.list li{font-size:2.5vw;font-weight:700;padding:2.2vh 0 2.2vh 3.4vw;position:relative;border-bottom:1px solid var(--line);word-break:keep-all;line-height:1.45}
   ul.list li::before{content:"✓";position:absolute;left:.6vw;color:var(--green);font-weight:900}
   ul.list li b{color:var(--green-dark)}
   ul.list li .r{color:var(--red)}
-  table.tb{width:100%;border-collapse:collapse;font-size:1.8vw;font-weight:700}
+  table.tb{width:100%;border-collapse:collapse;font-size:2.2vw;font-weight:700}
   .tb th{color:var(--gray);font-weight:800;text-align:left;padding:1.6vh 1vw;border-bottom:3px solid var(--ink)}
   .tb td{padding:1.7vh 1vw;border-bottom:1px solid var(--line)}
   .tb td.n,.tb th.n{text-align:right;font-variant-numeric:tabular-nums}
   .tb .gg{color:var(--green-dark);font-weight:900}
   .tb .rr{color:var(--red);font-weight:900}
-  h2.sec{font-size:3vw;font-weight:900;margin-bottom:4vh;word-break:keep-all}
+  h2.sec{font-size:3.7vw;font-weight:900;margin-bottom:4vh;word-break:keep-all}
   h2.sec em{font-style:normal;color:var(--green)}
   .pagenum{position:absolute;bottom:2.6vh;right:4vw;font-size:1.1vw;color:#B9C0C9;font-weight:700}
+  /* ── 플로우 다이어그램 ── */
+  .flow{display:flex;align-items:stretch;gap:1.2vw;margin-top:5.5vh;justify-content:center}
+  .flow .step{flex:1;max-width:21vw;border:2px solid var(--line);border-radius:18px;padding:4vh 1.4vw;text-align:center;background:#FBFCFD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8vh}
+  .flow .step.hl{border-color:var(--green);background:#F2FBF7}
+  .flow .ic{font-size:4vw;line-height:1}
+  .flow .k{font-size:2.4vw;font-weight:900;line-height:1.35;word-break:keep-all}
+  .flow .step.hl .k{color:var(--green-dark)}
+  .flow .step p{font-size:1.65vw;color:#5B6470;font-weight:600;line-height:1.6;word-break:keep-all}
+  .flow .arrow{align-self:center;font-size:3.4vw;font-weight:900;color:var(--green)}
 </style>
 </head>
 <body>
@@ -67,10 +76,15 @@
 
 <!-- 2 오늘의 목표 -->
 <section class="slide">
-  <p class="big" style="font-size:3vw"><span class="g">오늘의 목표</span></p>
-  <p class="sub" style="font-size:2vw;color:#3A4149;margin-top:5vh">여러 채널을 <b>동시에</b> 운영하면,<br>어떤 경우에 어떤 주제가 뜨는지 — 같은 주제라도 <b>왜 결과가 갈리는지</b>가 데이터로 보입니다.<br><br>
-  제가 다채널로 다양한 시도를 하는 이유가 바로 이것입니다.<br>데이터를 모아서, <b>더 정답에 가까운 방법</b>을 알려드리려고요.<br><br>
-  오늘은 그렇게 모인 데이터를 <b>정리해서 공개</b>합니다.</p>
+  <p class="big" style="font-size:3.8vw"><span class="g">오늘의 목표</span></p>
+  <div class="flow">
+    <div class="step"><div class="ic">📺</div><div class="k">6개 채널<br>동시 운영</div><p>같은 도구<br>같은 공정</p></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">📊</div><div class="k">데이터로 비교</div><p>뭐가 뜨는지<br>왜 갈리는지</p></div>
+    <div class="arrow">→</div>
+    <div class="step hl"><div class="ic">🎁</div><div class="k">오늘 전부 공개</div><p>더 정답에<br>가까운 방법</p></div>
+  </div>
+  <p class="sub" style="margin-top:5vh">감이 아니라, <b style="color:var(--ink)">데이터로</b> 말씀드립니다</p>
 </section>
 
 <!-- 3~5 훅 -->
@@ -106,7 +120,7 @@
 <!-- 8 Ch1 -->
 <section class="slide"><p class="chapnum">Chapter 1</p><p class="chaptitle">카테고리가 전부다</p></section>
 <section class="slide"><p class="big">8개 채널 전부,<br><span class="g">'경제' 하나</span>로 만들었습니다.</p></section>
-<section class="slide"><p class="big">경제 안에서 앵글만 쪼갰습니다.</p><p class="sub" style="font-size:2.3vw;color:var(--ink);font-weight:800">거시 · 생활경제 · 투자 · 돈 되는 뉴스</p></section>
+<section class="slide"><p class="big">경제 안에서 앵글만 쪼갰습니다.</p><p class="sub" style="font-size:2.9vw;color:var(--ink);font-weight:800">거시 · 생활경제 · 투자 · 돈 되는 뉴스</p></section>
 <section class="slide"><p class="big">같은 채널에서 <span class="g">소재만 바꿔도</span><br>조회수가 <span class="g">6~8배</span> 갈립니다.</p></section>
 <section class="slide"><p class="big">몰락 소재 평균 <span class="g">17.2만 뷰</span><br>vs 전체 평균 7.1만 뷰</p><p class="sub">10만뷰 넘은 대박 27개는 전부 — 몰락 · 중국 · 산업역전 소재였습니다</p></section>
 <section class="slide"><p class="big">최근엔 <span class="g">중국, 배(조선·해운)</span>가<br>터졌습니다.</p><p class="sub">산유국이 한국 항구에 줄 선 이야기 하나로 약 90만뷰<br>— 뜨는 소재는 정해진 답이 아니라, 리서치로 계속 찾는 겁니다</p></section>
@@ -116,7 +130,7 @@
 <!-- 16 Ch2 -->
 <section class="slide"><p class="chapnum">Chapter 2</p><p class="chaptitle">잘 뜨는 채널의 썸네일부터 분석하라</p></section>
 <section class="slide"><p class="big">저는 영상 만드는 시간보다<br><span class="g">남의 썸네일 보는 시간</span>이 더 깁니다.</p></section>
-<section class="slide"><p class="big">제목 공식은 이미 다 똑같습니다.</p><p class="sub" style="font-size:2.2vw;color:var(--ink);font-weight:800">「"인용 훅" + 실명·숫자 + ~의 진짜 이유」<br><span style="font-size:1.6vw;color:var(--gray)">296개 중 275개가 따옴표로 시작합니다</span></p></section>
+<section class="slide"><p class="big">제목 공식은 이미 다 똑같습니다.</p><p class="sub" style="font-size:2.8vw;color:var(--ink);font-weight:800">「"인용 훅" + 실명·숫자 + ~의 진짜 이유」<br><span style="font-size:2vw;color:var(--gray)">296개 중 275개가 따옴표로 시작합니다</span></p></section>
 <section class="slide"><p class="big">공식은 출발점일 뿐 —<br>한 끗은 <span class="g">벤치마킹</span>에서 나옵니다.</p><p class="sub">같은 공식 안에서 어떤 인용, 어떤 숫자를 고르느냐의 차이입니다</p></section>
 <section class="slide"><p class="big">같은 태양광 소재도<br>훅 한 줄, 타이밍 따라 <span class="r">172배</span> 차이.</p><p class="sub">32만뷰 vs 1,800뷰 — 미묘한 차이가 수익을 가릅니다</p></section>
 <section class="slide">
@@ -195,7 +209,7 @@
 
 <!-- 40 클로징 -->
 <section class="slide"><p class="big">오늘 자료는 <span class="g">정모 후기</span><br>남겨주신 분들께 드립니다!</p><p class="sub">카페에 후기 올려주시면 숫자·표 포함 정리본을 보내드려요.<br>후기에 <b>"2기"</b>까지 남겨주시면 — 야담 수익 공개와 2기 모집 소식도 <b>가장 먼저</b> 드립니다</p></section>
-<section class="slide"><p class="chapnum" style="font-size:8vw">Q&A</p><p class="sub" style="font-size:2vw">채널 진단 원하시는 분은 말씀해주세요. 같이 봅니다.</p></section>
+<section class="slide"><p class="chapnum" style="font-size:8vw">Q&A</p><p class="sub" style="font-size:2.4vw">채널 진단 원하시는 분은 말씀해주세요. 같이 봅니다.</p></section>
 
 <div class="pagenum" style="position:fixed;z-index:9"><span id="cur">1</span> / <span id="tot"></span></div>
 
