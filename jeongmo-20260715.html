@@ -23,6 +23,7 @@
   .big{font-size:4.8vw;font-weight:800;line-height:1.42;text-align:center;word-break:keep-all;letter-spacing:-0.015em}
   .big .g{color:var(--green)} .big .r{color:var(--red)}
   .sub{font-size:2.2vw;color:var(--gray);font-weight:600;text-align:center;margin-top:4vh;word-break:keep-all;line-height:1.6}
+  .sub b{color:var(--ink)}
   .chapnum{font-size:7vw;font-weight:900;text-align:center;letter-spacing:-0.02em}
   .chapnum::after{content:"";display:block;width:9vw;height:0.7vh;background:var(--green);margin:2.4vh auto 0}
   .chaptitle{font-size:4.2vw;font-weight:800;text-align:center;margin-top:4.2vh;word-break:keep-all}
@@ -35,14 +36,18 @@
   /* ── 카드/리스트 ── */
   .cards{display:flex;gap:1.6vw;margin-top:2vh}
   .card{flex:1;border:2px solid var(--line);border-radius:18px;padding:3.6vh 1.8vw;background:#FBFCFD}
+  .card.hl{border-color:var(--green);background:#F2FBF7}
+  .card.bad{border-color:#FFD3D3;background:#FFF8F8}
   .card h4{font-size:1.7vw;color:var(--green-dark);font-weight:900;letter-spacing:.08em;margin-bottom:1.6vh}
+  .card.bad h4{color:var(--red)}
   .card .t{font-size:2.5vw;font-weight:800;line-height:1.4;word-break:keep-all;margin-bottom:2vh}
   .card p{font-size:1.65vw;color:#5B6470;font-weight:600;line-height:1.7;word-break:keep-all}
   ul.list{list-style:none;width:100%}
-  ul.list li{font-size:2.5vw;font-weight:700;padding:2.2vh 0 2.2vh 3.4vw;position:relative;border-bottom:1px solid var(--line);word-break:keep-all;line-height:1.45}
+  ul.list li{font-size:2.4vw;font-weight:700;padding:2vh 0 2vh 3.4vw;position:relative;border-bottom:1px solid var(--line);word-break:keep-all;line-height:1.45}
   ul.list li::before{content:"✓";position:absolute;left:.6vw;color:var(--green);font-weight:900}
   ul.list li b{color:var(--green-dark)}
   ul.list li .r{color:var(--red)}
+  ul.list li small{display:block;font-size:1.5vw;color:var(--gray);font-weight:600;margin-top:.5vh}
   table.tb{width:100%;border-collapse:collapse;font-size:2.2vw;font-weight:700}
   .tb th{color:var(--gray);font-weight:800;text-align:left;padding:1.6vh 1vw;border-bottom:3px solid var(--ink)}
   .tb td{padding:1.7vh 1vw;border-bottom:1px solid var(--line)}
@@ -52,6 +57,54 @@
   h2.sec{font-size:3.7vw;font-weight:900;margin-bottom:4vh;word-break:keep-all}
   h2.sec em{font-style:normal;color:var(--green)}
   .pagenum{position:absolute;bottom:2.6vh;right:4vw;font-size:1.1vw;color:#B9C0C9;font-weight:700}
+  /* ── 목차 ── */
+  ul.toc{list-style:none;width:100%}
+  .toc li{display:flex;align-items:center;gap:1.8vw;padding:2.2vh 0;border-bottom:1px solid var(--line)}
+  .toc .no{font-size:2.7vw;font-weight:900;color:var(--green);width:5.5vw;flex-shrink:0}
+  .toc .tt{font-size:2.35vw;font-weight:800;width:27vw;word-break:keep-all;flex-shrink:0}
+  .toc .ds{font-size:1.55vw;color:var(--gray);font-weight:600;line-height:1.5;word-break:keep-all}
+  /* ── 가로 막대차트 ── */
+  .bars{width:100%;margin-top:1vh}
+  .brow{display:flex;align-items:center;margin-bottom:1.5vh}
+  .brow .bl{width:17vw;font-size:1.6vw;font-weight:800;color:#3A4149;text-align:right;padding-right:1.2vw;word-break:keep-all;line-height:1.25;flex-shrink:0}
+  .brow .bl small{display:block;font-size:1.1vw;color:var(--gray);font-weight:600}
+  .brow .track{flex:1;display:flex;align-items:center;gap:.8vw}
+  .brow .bf{height:3.4vh;border-radius:6px;background:var(--green);min-width:.4vw;flex-shrink:0}
+  .brow.gray .bf{background:#C6CDD5}
+  .brow.red .bf{background:var(--red)}
+  .brow .bv{font-size:1.7vw;font-weight:900;white-space:nowrap}
+  .brow .bs{font-size:1.25vw;color:var(--gray);font-weight:600;white-space:nowrap}
+  /* ── 썸네일 그리드 ── */
+  .thumbs{display:grid;grid-template-columns:repeat(2,auto);justify-content:center;gap:1.6vh 1.2vw;margin-top:.5vh}
+  .th{position:relative;border-radius:14px;overflow:hidden;border:2px solid var(--line);height:26vh;aspect-ratio:16/9;background:#000}
+  .th img{width:100%;height:100%;object-fit:cover;display:block}
+  .th .vw{position:absolute;right:.7vw;bottom:1vh;background:rgba(0,0,0,.74);color:#fff;font-size:1.25vw;font-weight:800;padding:.5vh .8vw;border-radius:8px}
+  .th .ch{position:absolute;left:.7vw;top:1vh;background:var(--green);color:#fff;font-size:1.05vw;font-weight:800;padding:.4vh .7vw;border-radius:8px}
+  /* ── 실제 제목 예시 리스트 ── */
+  ul.tl{list-style:none;width:100%;margin-top:2vh}
+  ul.tl li{font-size:1.95vw;font-weight:700;padding:2vh .5vw;border-bottom:1px solid var(--line);line-height:1.55;word-break:keep-all;color:#3A4149}
+  ul.tl li .q{color:var(--green-dark);font-weight:900}
+  ul.tl li .r{color:var(--red);font-weight:900}
+  ul.tl li .v{color:var(--gray);font-size:1.45vw;font-weight:800;margin-left:.9vw;white-space:nowrap}
+  /* ── 캘린더 ── */
+  table.cal{width:100%;border-collapse:collapse;table-layout:fixed;margin-top:.5vh}
+  .cal th{font-size:1.3vw;color:var(--gray);font-weight:800;padding:.7vh 0;border-bottom:2px solid var(--ink);text-align:center}
+  .cal th.su{color:var(--red)} .cal th.sa{color:#3B82F6}
+  .cal td{border:1px solid var(--line);height:7.6vh;vertical-align:top;padding:.5vh .5vw}
+  .cal td .d{font-size:1.3vw;font-weight:800;color:var(--ink);display:block;line-height:1.2}
+  .cal td.su .d{color:var(--red)} .cal td.sa .d{color:#3B82F6}
+  .cal td .e{display:block;font-size:1.02vw;font-weight:800;line-height:1.3;word-break:keep-all;margin-top:.3vh;color:#39424C}
+  .cal td.reg{background:var(--green)} .cal td.reg .d,.cal td.reg .e{color:#fff}
+  .cal td.gst{background:#FFE14D}
+  .cal td.gry{background:#EEF1F4}
+  .cal td.fre .d,.cal td.fre .e{color:var(--red)}
+  .callg{display:flex;gap:1.6vw;margin-top:1.6vh;flex-wrap:wrap}
+  .callg span{font-size:1.35vw;font-weight:700;color:#5B6470;display:flex;align-items:center;gap:.5vw}
+  .callg i{width:1.1vw;height:1.1vw;border-radius:4px;display:inline-block}
+  /* ── 코멘트 박스 ── */
+  .cmt{margin-top:3.6vh;background:#F2FBF7;border-left:.45vw solid var(--green);border-radius:0 14px 14px 0;padding:2.1vh 1.8vw;font-size:1.95vw;font-weight:700;line-height:1.55;word-break:keep-all;color:#26313B}
+  .cmt::before{content:"💡 "}
+  .cmt b{color:var(--green-dark)} .cmt .r{color:var(--red)}
   /* ── 플로우 다이어그램 ── */
   .flow{display:flex;align-items:stretch;gap:1.2vw;margin-top:5.5vh;justify-content:center}
   .flow .step{flex:1;max-width:21vw;border:2px solid var(--line);border-radius:18px;padding:4vh 1.4vw;text-align:center;background:#FBFCFD;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8vh}
@@ -99,9 +152,9 @@
     <tr><th>채널</th><th class="n">6월 조회수</th><th class="n">구독자 증가</th><th class="n">예상수익</th></tr>
     <tr><td>🟢 채널 A</td><td class="n">138.9만</td><td class="n">+1.1만</td><td class="n gg">₩580만</td></tr>
     <tr><td>🔵 채널 B</td><td class="n">147.5만</td><td class="n">+7.5천</td><td class="n">₩520만</td></tr>
-    <tr><td>🟣 채널 C</td><td class="n">119.9만</td><td class="n">+4.1천</td><td class="n">₩366만</td></tr>
-    <tr><td>🟠 채널 D</td><td class="n">31.6만</td><td class="n">+1.2천</td><td class="n">₩85만</td></tr>
-    <tr><td>🟤 채널 E</td><td class="n">18.5만</td><td class="n">+563</td><td class="n">₩53만</td></tr>
+    <tr><td>🟠 채널 C</td><td class="n">119.9만</td><td class="n">+4.1천</td><td class="n">₩366만</td></tr>
+    <tr><td>🟣 채널 D</td><td class="n">31.6만</td><td class="n">+1.2천</td><td class="n">₩85만</td></tr>
+    <tr><td>🟡 채널 E</td><td class="n">18.5만</td><td class="n">+563</td><td class="n">₩53만</td></tr>
     <tr><td>🔴 채널 F</td><td class="n">17.2만</td><td class="n">+454</td><td class="n rr">₩40만</td></tr>
   </table>
   <p class="note">합계 조회수 약 473만 · 구독자 순증 약 +2.5만 · 최고 수익 영상 하나가 ₩397만 (97만뷰)</p>
@@ -110,29 +163,206 @@
 <!-- 7 목차 -->
 <section class="slide">
   <h2 class="sec">LECTURE <em>CONTENTS</em></h2>
-  <div class="cards">
-    <div class="card"><h4>1부</h4><div class="t">카테고리가<br>전부다</div><p>8개 채널 전부 '경제' 하나.<br>소재가 조회수를 6~8배 가릅니다.<br>뜨는 소재는 리서치로 찾습니다.</p></div>
-    <div class="card"><h4>2부</h4><div class="t">잘 뜨는 채널의<br>썸네일 분석</div><p>제목 공식은 이미 다 똑같습니다.<br>같은 소재로 32만뷰 vs 1,800뷰,<br>미묘한 한 끗이 가릅니다.</p></div>
-    <div class="card"><h4>3 · 4 · 5부</h4><div class="t">10 vs 10,<br>채널 운영과 마인드셋</div><p>원칙 지킨 10개 전부 성공.<br>채널빨 · 삭제 금지 · 새 채널,<br>그리고 '최소 30개' 확률 게임.</p></div>
-  </div>
+  <ul class="toc">
+    <li><span class="no">1부</span><span class="tt">성적표 해부</span><span class="ds">내 6개 채널 · 영상 246개 전수분석 — 수익은 어디서 오는가, '채널빨'의 실체</span></li>
+    <li><span class="no">2부</span><span class="tt">시장의 답</span><span class="ds">경제채널 14개 · 318개 전수분석 — 구독자는 의미 없다, 답은 '축 + 템플릿'</span></li>
+    <li><span class="no">3부</span><span class="tt">무엇이 터지나</span><span class="ds">소재는 정보가 아니라 감정 — 내 최강 축, 그리고 내가 선점할 블루오션</span></li>
+    <li><span class="no">4부</span><span class="tt">어떻게 만드나</span><span class="ds">시장 히트작 46개의 공통 공식 — 제목 · 썸네일 · 길이의 정답</span></li>
+    <li><span class="no">5부</span><span class="tt">채널 운영</span><span class="ds">삭제 금지 · 새 채널 · 복권 공장 — 그리고 제가 이번 달 하는 것</span></li>
+  </ul>
 </section>
 
-<!-- 8 Ch1 -->
-<section class="slide"><p class="chapnum">Chapter 1</p><p class="chaptitle">카테고리가 전부다</p></section>
-<section class="slide"><p class="big">8개 채널 전부,<br><span class="g">'경제' 하나</span>로 만들었습니다.</p></section>
-<section class="slide"><p class="big">경제 안에서 앵글만 쪼갰습니다.</p><p class="sub" style="font-size:2.9vw;color:var(--ink);font-weight:800">거시 · 생활경제 · 투자 · 돈 되는 뉴스</p></section>
-<section class="slide"><p class="big">같은 채널에서 <span class="g">소재만 바꿔도</span><br>조회수가 <span class="g">6~8배</span> 갈립니다.</p></section>
-<section class="slide"><p class="big">몰락 소재 평균 <span class="g">17.2만 뷰</span><br>vs 전체 평균 7.1만 뷰</p><p class="sub">10만뷰 넘은 대박 27개는 전부 — 몰락 · 중국 · 산업역전 소재였습니다</p></section>
-<section class="slide"><p class="big">최근엔 <span class="g">중국, 배(조선·해운)</span>가<br>터졌습니다.</p><p class="sub">산유국이 한국 항구에 줄 선 이야기 하나로 약 90만뷰<br>— 뜨는 소재는 정해진 답이 아니라, 리서치로 계속 찾는 겁니다</p></section>
+<!-- ═══════════ Chapter 1 성적표 해부 ═══════════ -->
+<section class="slide"><p class="chapnum">Chapter 1</p><p class="chaptitle">성적표 해부 — 숫자의 실체</p><p class="sub">내 6개 채널 · 롱폼 246개 · 누적 1,425만뷰 전수분석</p></section>
+
+<!-- 9 채널 요약 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2.5vh">같은 공정, <em>다른 숫자</em></h2>
+  <table class="tb" style="font-size:1.95vw">
+    <tr><th>채널</th><th class="n">구독자</th><th class="n">롱폼</th><th class="n">영상당 중앙값</th><th class="n">상위 3개 비중</th><th class="n">6월 수익</th></tr>
+    <tr><td>🟢 A</td><td class="n">2.3만</td><td class="n">43개</td><td class="n">2,200</td><td class="n">77%</td><td class="n gg">₩580만</td></tr>
+    <tr><td>🔵 B</td><td class="n">2.9만</td><td class="n">53개</td><td class="n gg">7,200</td><td class="n">66%</td><td class="n">₩520만</td></tr>
+    <tr><td>🟠 C</td><td class="n">2.3만</td><td class="n">88개</td><td class="n">4,350</td><td class="n">50%</td><td class="n">₩366만</td></tr>
+    <tr><td>🟣 D</td><td class="n">4,610</td><td class="n">30개</td><td class="n rr">960</td><td class="n">74%</td><td class="n">₩85만</td></tr>
+    <tr><td>🟡 E</td><td class="n">1.0만</td><td class="n">22개</td><td class="n">1,000</td><td class="n">78%</td><td class="n">₩53만</td></tr>
+    <tr><td>🔴 F</td><td class="n">2,830</td><td class="n">10개</td><td class="n">1,575</td><td class="n">99%</td><td class="n">₩40만</td></tr>
+  </table>
+  <p class="cmt">영상당 중앙값이 <b>7.5배</b> 차이 (B 7,200 vs D 960) — 같은 공정에서 나는 이 격차가 <b>'채널빨'의 실체</b>입니다.</p>
+</section>
+
+<!-- 10 파레토 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2.5vh">상위 3개 영상이 <em>채널 조회수에서 차지하는 비중</em></h2>
+  <div class="bars">
+    <div class="brow"><span class="bl">🟢 채널 A</span><span class="track"><span class="bf" style="width:77%"></span><span class="bv">77%</span></span></div>
+    <div class="brow"><span class="bl">🔵 채널 B</span><span class="track"><span class="bf" style="width:66%"></span><span class="bv">66%</span></span></div>
+    <div class="brow"><span class="bl">🟠 채널 C</span><span class="track"><span class="bf" style="width:50%"></span><span class="bv">50%</span></span></div>
+    <div class="brow"><span class="bl">🟣 채널 D</span><span class="track"><span class="bf" style="width:74%"></span><span class="bv">74%</span></span></div>
+    <div class="brow"><span class="bl">🟡 채널 E</span><span class="track"><span class="bf" style="width:78%"></span><span class="bv">78%</span></span></div>
+    <div class="brow red"><span class="bl">🔴 채널 F</span><span class="track"><span class="bf" style="width:99%"></span><span class="bv">99%</span><span class="bs">영상 10개뿐</span></span></div>
+  </div>
+  <p class="cmt">상위 3개가 <b>절반에서 전부</b>를 법니다 — 대박 하나가 채널을 먹여살리는 구조. 그래서 <b>'개수'가 무기</b>입니다.</p>
+</section>
+
+<!-- ═══════════ Chapter 2 시장의 답 ═══════════ -->
+<section class="slide"><p class="chapnum">Chapter 2</p><p class="chaptitle">시장의 답 — 잘 되는 채널은 뭐가 다른가</p><p class="sub">잘나가는 경제채널 14개 · 최근 2주 롱폼 318개 전수분석</p></section>
+
+<!-- 15 구독자 무의미 -->
+<section class="slide"><p class="big">구독자 수는 <span class="r">의미 없습니다.</span></p><p class="sub">구독 <b>7,330명</b> 채널이 2주에 <b>157만뷰</b> — 개설 3주차 신생도 영상당 2.2만.<br>전부 알고리즘 추천으로 크는 시장 = <b>신규 진입에 유리한 구조</b></p></section>
+
+<!-- 평균의 착시 (벤치마킹 팁) -->
+<section class="slide"><p class="big">평균 조회수도 <span class="r">거짓말</span>을 합니다.</p><p class="sub">평균 <b>6.1만</b>짜리 시장 채널의 중앙값은 <b>9,266</b> — 대박 몇 개가 만든 착시.<br>벤치마킹 대상은 <b>중앙값</b>으로 골라야 '따라할 수 있는 채널'이 나옵니다</p></section>
+
+<!-- 16 시장 1위 공식 -->
+<section class="slide">
+  <h2 class="sec">시장 1위의 공식 — <em>2주 332만뷰</em></h2>
+  <div class="cards">
+    <div class="card hl"><h4>① 안정형</h4><div class="t">조회수가<br>고르다</div><p>기복(CV) 최소 수준.<br>보통 영상이 5만씩 나옴.</p></div>
+    <div class="card hl"><h4>② 물량</h4><div class="t">하루<br>2.9개</div><p>안정성 위에 물량을 곱함.<br>물량이 총량을 만듦.</p></div>
+    <div class="card hl"><h4>③ 25분 포맷</h4><div class="t">대본형<br>긴 서사</div><p>후킹으로 끌고 와서<br>시청시간으로 보상받음.</p></div>
+  </div>
+  <p class="cmt"><b>3개 중 1개가 10만+ 히트</b> — 히트를 운이 아니라 <b>공정(工程)</b>으로 만든 채널이 1위입니다.</p>
+</section>
+
+<!-- 17 물량 ≠ 안정 -->
+<section class="slide"><p class="big">물량은 안정성을 <span class="r">못 삽니다.</span></p><p class="sub">하루 3개씩 올리는 물량 1·2위 채널들의 중앙값은 5천~8천에 그침.<br>안정성의 원천은 <b>'소재 축 + 템플릿 고정'</b> — 조회수가 가장 고른 채널은 전부 템플릿 고정 채널</p></section>
+
+<!-- ═══════════ Chapter 3 무엇이 터지나 ═══════════ -->
+<section class="slide"><p class="chapnum">Chapter 3</p><p class="chaptitle">무엇이 터지나 — 소재는 감정이다</p></section>
+
+<!-- 20 감정 선언 -->
+<section class="slide"><p class="big">소재의 본질은 정보가 아니라<br><span class="g">감정</span>입니다.</p><p class="sub">시장 히트작 46개 <b>전부</b>에 감정 서사가 있었습니다.<br>감정 없이 정보만 있는 영상은 — 전부 바닥이었습니다.</p></section>
+
+<!-- 21 내 감정축 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2vh">내 채널 246개 — <em>소재별 영상당 중앙값</em></h2>
+  <div class="bars">
+    <div class="brow"><span class="bl">몰락·붕괴 <small>불안 · 19개</small></span><span class="track"><span class="bf" style="width:100%"></span><span class="bv">1.6만</span></span></div>
+    <div class="brow gray"><span class="bl">중국 리스크 <small>불안 · 29개</small></span><span class="track"><span class="bf" style="width:58%"></span><span class="bv">9,300</span></span></div>
+    <div class="brow gray"><span class="bl">해외·국제 <small>호기심 · 45개</small></span><span class="track"><span class="bf" style="width:29%"></span><span class="bv">4,600</span></span></div>
+    <div class="brow gray"><span class="bl">자영업·불황 <small>공감 · 16개</small></span><span class="track"><span class="bf" style="width:21%"></span><span class="bv">3,400</span></span></div>
+    <div class="brow gray"><span class="bl">대기업 스토리 <small>통쾌·분노 · 41개</small></span><span class="track"><span class="bf" style="width:17%"></span><span class="bv">2,700</span></span></div>
+    <div class="brow gray"><span class="bl">기타 (축 없음) <small>77개</small></span><span class="track"><span class="bf" style="width:11%"></span><span class="bv">1,800</span></span></div>
+    <div class="brow red"><span class="bl">K-국뽕 <small>자부심 · 19개</small></span><span class="track"><span class="bf" style="width:7%"></span><span class="bv">1,100</span></span></div>
+  </div>
+  <p class="cmt"><b>몰락(불안)이 내 최강 축</b> — 전체 중앙값(2,800)의 5.7배. 이 축부터 시리즈화합니다.</p>
+</section>
+
+<!-- 22 시장 감정축 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2vh">시장 318개 — <em>소재별 영상당 중앙값</em></h2>
+  <div class="bars">
+    <div class="brow"><span class="bl">K-국뽕 <small>자부심 · 공급 15개</small></span><span class="track"><span class="bf" style="width:100%"></span><span class="bv">2.1만</span><span class="bs">공급 부족 = 블루오션</span></span></div>
+    <div class="brow gray"><span class="bl">자영업·불황 <small>공감 · 35개</small></span><span class="track"><span class="bf" style="width:90%"></span><span class="bv">1.9만</span></span></div>
+    <div class="brow gray"><span class="bl">대기업 스토리 <small>통쾌·분노 · 46개</small></span><span class="track"><span class="bf" style="width:81%"></span><span class="bv">1.7만</span></span></div>
+    <div class="brow red"><span class="bl">중국 리스크 <small>불안 · 공급 57개</small></span><span class="track"><span class="bf" style="width:67%"></span><span class="bv">1.4만</span><span class="bs">공급 과잉 = 레드오션</span></span></div>
+    <div class="brow gray"><span class="bl">기타 (단발) <small>107개</small></span><span class="track"><span class="bf" style="width:35%"></span><span class="bv">7.3천</span></span></div>
+  </div>
+  <p class="cmt"><b>소재에도 수급이 있습니다</b> — 국뽕은 기대값 1위인데 공급 부족, 중국 리스크는 57개가 쏟아져 기대값 반토막.</p>
+</section>
+
+<!-- 23 국뽕 블루오션 선점 -->
+<section class="slide"><p class="big">그래서 제 다음 베팅은 —<br><span class="g">국뽕 × '인물+반전'</span>입니다.</p><p class="sub">시장 기대값 <b>1위</b>인데 공급은 <b>15개뿐</b>.<br>남들이 중국 레드오션에 몰릴 때, 블루오션을 <b>선점</b>합니다</p></section>
+
+<!-- 24 기타 손해 -->
+<section class="slide"><p class="big">단, 축 없는 <span class="r">'단발 소재'</span>는<br>만들지 마세요.</p><p class="sub">시장에서도 축 없는 영상 107개의 중앙값은 <b>7.3천 — 전 소재 중 최하위</b>.<br>이것저것 만드는 노동은 0에 수렴합니다 — <b>축을 정하고 시리즈로</b> 가세요</p></section>
+
+<!-- 25~26 카테고리 이탈 -->
 <section class="slide"><p class="big">반대로, 경제 채널에 축구를 올리면?</p></section>
 <section class="slide"><p class="big"><span class="r">98뷰</span> 나옵니다.</p><p class="sub">역사를 올리면 113뷰. 카테고리 밖 13개 영상, 대박 0개.</p></section>
 
-<!-- 16 Ch2 -->
-<section class="slide"><p class="chapnum">Chapter 2</p><p class="chaptitle">잘 뜨는 채널의 썸네일부터 분석하라</p></section>
-<section class="slide"><p class="big">저는 영상 만드는 시간보다<br><span class="g">남의 썸네일 보는 시간</span>이 더 깁니다.</p></section>
-<section class="slide"><p class="big">제목 공식은 이미 다 똑같습니다.</p><p class="sub" style="font-size:2.8vw;color:var(--ink);font-weight:800">「"인용 훅" + 실명·숫자 + ~의 진짜 이유」<br><span style="font-size:2vw;color:var(--gray)">296개 중 275개가 따옴표로 시작합니다</span></p></section>
-<section class="slide"><p class="big">공식은 출발점일 뿐 —<br>한 끗은 <span class="g">벤치마킹</span>에서 나옵니다.</p><p class="sub">같은 공식 안에서 어떤 인용, 어떤 숫자를 고르느냐의 차이입니다</p></section>
-<section class="slide"><p class="big">같은 태양광 소재도<br>훅 한 줄, 타이밍 따라 <span class="r">172배</span> 차이.</p><p class="sub">32만뷰 vs 1,800뷰 — 미묘한 차이가 수익을 가릅니다</p></section>
+<!-- ═══════════ Chapter 4 어떻게 만드나 ═══════════ -->
+<section class="slide"><p class="chapnum">Chapter 4</p><p class="chaptitle">어떻게 만드나 — 히트작의 공식</p></section>
+
+<!-- 28 썸네일 시간 -->
+<section class="slide"><p class="big">저는 영상 만드는 시간보다<br><span class="g">남의 썸네일 보는 시간</span>이 더 깁니다.</p><p class="sub">지금부터 — 잘나가는 시장 채널들의 실제 썸네일로 보여드립니다</p></section>
+
+<!-- 썸네일 패턴 ① 시장 1위 -->
+<section class="slide" style="padding-top:12vh">
+  <h2 class="sec" style="margin-bottom:1.5vh;font-size:3.1vw">패턴 ① 위기 실사 + <em>하단 2줄 공식</em> <span style="font-size:1.7vw;color:var(--gray);font-weight:700">— 시장 1위 채널 (2주 332만뷰)</span></h2>
+  <div class="thumbs">
+    <div class="th"><img src="images/bench/lL9qyW6kBI4.jpg" alt=""><span class="vw">55.9만</span></div>
+    <div class="th"><img src="images/bench/IsNF-0k0S9g.jpg" alt=""><span class="vw">49.1만</span></div>
+    <div class="th"><img src="images/bench/1NSDTUQP1DE.jpg" alt=""><span class="vw">45.0만</span></div>
+    <div class="th"><img src="images/bench/C24I-13U-vw.jpg" alt=""><span class="vw">30.0만</span></div>
+  </div>
+  <p class="cmt" style="margin-top:2vh;font-size:1.75vw">1줄 흰색 <b>따옴표 인용</b> + 2줄 노랑·빨강 <b>결론</b>. 소재는 바뀌어도 형식은 완전 고정 — <b>썸네일만 봐도 이 채널인 걸 압니다.</b></p>
+</section>
+
+<!-- 썸네일 패턴 ② 몰락 시리즈 -->
+<section class="slide" style="padding-top:12vh">
+  <h2 class="sec" style="margin-bottom:1.5vh;font-size:3.1vw">패턴 ② <em>'OO의 몰락' 시리즈</em> <span style="font-size:1.7vw;color:var(--gray);font-weight:700">— 축 하나에 템플릿 고정</span></h2>
+  <div class="thumbs">
+    <div class="th"><img src="images/bench/9sXVe8Bl5BA.jpg" alt=""><span class="vw">41.4만</span></div>
+    <div class="th"><img src="images/bench/MHRg2YPIQDY.jpg" alt=""><span class="vw">19.2만</span></div>
+    <div class="th"><img src="images/bench/EHr3g48QoHs.jpg" alt=""><span class="vw">13.8만</span></div>
+    <div class="th"><img src="images/bench/cIi2jAIOeAU.jpg" alt=""><span class="vw">10.5만</span></div>
+  </div>
+  <p class="cmt" style="margin-top:2vh;font-size:1.75vw">에어컨 → 반도체 → 애플 → 대만, <b>대상만 갈아끼우는</b> 몰락 시리즈. 템플릿 고정도가 높을수록 <b>조회수가 고릅니다.</b></p>
+</section>
+
+<!-- 썸네일 패턴 ③ 감성 실사 공감 -->
+<section class="slide" style="padding-top:12vh">
+  <h2 class="sec" style="margin-bottom:1.5vh;font-size:3.1vw">패턴 ③ 감성 실사 + <em>공감(불황)</em> <span style="font-size:1.7vw;color:var(--gray);font-weight:700">— 구독 7천으로 2주 157만뷰</span></h2>
+  <div class="thumbs">
+    <div class="th"><img src="images/bench/aGzrWc6fb_Y.jpg" alt=""><span class="vw">68.3만</span></div>
+    <div class="th"><img src="images/bench/x29_xkGyNd8.jpg" alt=""><span class="vw">61.6만</span></div>
+    <div class="th"><img src="images/bench/IPNxOgH1jGg.jpg" alt=""><span class="vw">4.7만</span></div>
+    <div class="th"><img src="images/bench/rQ_k6VdX6S0.jpg" alt=""><span class="vw">3.8만</span></div>
+  </div>
+  <p class="cmt" style="margin-top:2vh;font-size:1.75vw">우는 인물 · 텅 빈 상점가 + <b>"OO의 몰락" 노란 대형 글씨</b>. 자영업 '공감' 소재 × 12분 게릴라 — <b>저비용 고효율</b>의 정석.</p>
+</section>
+
+<!-- 썸네일 패턴 ④ 국뽕 -->
+<section class="slide" style="padding-top:12vh">
+  <h2 class="sec" style="margin-bottom:1.5vh;font-size:3.1vw">패턴 ④ K-제조업 <em>국뽕 (인물+반전)</em> <span style="font-size:1.7vw;color:var(--gray);font-weight:700">— 제가 선점할 블루오션</span></h2>
+  <div class="thumbs">
+    <div class="th"><img src="images/bench/8SphZohHeuc.jpg" alt=""><span class="vw">21.2만</span></div>
+    <div class="th"><img src="images/bench/XiquYbEAd5M.jpg" alt=""><span class="vw">22.7만</span></div>
+    <div class="th"><img src="images/bench/WkpGMfFFn0w.jpg" alt=""><span class="vw">10만+</span></div>
+    <div class="th"><img src="images/bench/6DzIXLazgUU.jpg" alt=""><span class="vw">10만+</span></div>
+  </div>
+  <p class="cmt" style="margin-top:2vh;font-size:1.75vw">실사 산업 현장 + <b>"독일·일본이 거절한 걸 한국이"</b> 반전 서사. 이 축은 시청층 바닥이 가장 단단합니다 — <b>기복 최소</b>.</p>
+</section>
+
+<!-- 29 히트작 공식 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2vh">시장 히트작 46개의 <em>공통 공식</em></h2>
+  <ul class="list" style="font-size:2.1vw">
+    <li style="font-size:2.15vw"><b>감정 아크</b> — 복수 · 몰락 공감 · 반전 국뽕 · 붕괴 불안</li>
+    <li style="font-size:2.15vw"><b>따옴표 육성 인용 57%</b> — "커트비 2만 원입니다" 현장의 목소리로 시작</li>
+    <li style="font-size:2.15vw"><b>구체적 숫자 61%</b> — "72억 vs 1억 5천", "53년간 단 2번"</li>
+    <li style="font-size:2.15vw"><b>평균 24.5분</b> — 히트작은 짧지 않다, 후킹으로 끌고 와 길게 붙잡는다</li>
+    <li style="font-size:2.15vw"><b>선악·승패 구도</b> — 시청자가 응원할 편을 만들어 준다</li>
+  </ul>
+</section>
+
+<!-- 30 제목 공식 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:1vh">제목 공식은 이미 <em>수렴</em>했습니다</h2>
+  <p style="font-size:2.6vw;font-weight:800;word-break:keep-all">「<span style="color:var(--green-dark)">"육성 인용"</span> + <span>숫자</span> + <span style="color:var(--red)">~의 진짜 이유</span>」</p>
+  <ul class="tl">
+    <li><span class="q">"커트비 2만 원입니다"</span> 단골마저 떠났다… 미용실이 줄줄이 문 닫는 <span class="r">진짜 이유</span><span class="v">61.6만뷰</span></li>
+    <li><span class="q">"살다 살다 이런 불경기는 처음"</span> 2차가 사라졌다, 술집과 노래방이 줄줄이 <span class="r">무너지는 이유</span><span class="v">68.3만뷰</span></li>
+    <li><span class="q">"세계 최대 댐 싼샤댐, 정말 무너지나"</span> 중국이 숨기고 싶은 <span class="r">진짜 이유</span><span class="v">22.0만뷰</span></li>
+    <li><span class="q">"갑질하더니 이제 와서…"</span> 한국 반도체에 무릎 꿇은 애플의 <span class="r">최후</span><span class="v">55.9만뷰</span></li>
+  </ul>
+  <p class="cmt" style="margin-top:2.5vh;font-size:1.75vw">전부 다른 채널인데 <b>같은 공식</b>입니다. 내 영상 296개 중 275개도 따옴표 시작 — 시장 공통 1위 키워드는 <b>'진짜'</b>.</p>
+</section>
+
+<!-- 31 길이 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2.5vh">길이의 정답 — <em>내 246개, 길이별 중앙값</em></h2>
+  <div class="bars">
+    <div class="brow red"><span class="bl">3~12분 <small>14개</small></span><span class="track"><span class="bf" style="width:2%"></span><span class="bv">520</span></span></div>
+    <div class="brow gray"><span class="bl">12~20분 <small>110개</small></span><span class="track"><span class="bf" style="width:7%"></span><span class="bv">2,100</span></span></div>
+    <div class="brow gray"><span class="bl">20~28분 <small>86개</small></span><span class="track"><span class="bf" style="width:13%"></span><span class="bv">3,950</span></span></div>
+    <div class="brow"><span class="bl">28분 이상 <small>36개</small></span><span class="track"><span class="bf" style="width:100%"></span><span class="bv">3.1만</span></span></div>
+  </div>
+  <p class="cmt">28분+가 12분 미만의 <b>60배</b>. 단, 길이는 원인이 아니라 <b>'서사력의 결과'</b> — 서사 없이 늘리면 역효과입니다.</p>
+</section>
+
+<!-- 32 훔쳐볼 5가지 -->
 <section class="slide">
   <h2 class="sec">남의 썸네일에서 <em>훔쳐볼 것 5가지</em></h2>
   <ul class="list">
@@ -143,12 +373,14 @@
     <li><b>감정</b> — 분노 · 불안 · 통쾌 중 무엇을 건드리나</li>
   </ul>
 </section>
-<section class="slide"><p class="big">단, 썸네일 <span class="r">템플릿 돌려쓰기는 금지!</span></p><p class="sub">'허위 콘텐츠' 제재로 이어집니다</p></section>
 
-<!-- 23 Ch3 -->
-<section class="slide"><p class="chapnum">Chapter 3</p><p class="chaptitle">10 vs 10 — 말한 대로 한 채널 vs 안 한 채널</p></section>
-<section class="slide"><p class="big">말한 대로 한 10개는,<br><span class="g">전부 수익창출에 성공했고</span></p></section>
-<section class="slide"><p class="big">안 한 10개는<br><span class="r">전부 실패했습니다.</span></p></section>
+<!-- 33 템플릿 금지 -->
+<section class="slide"><p class="big">단, 썸네일 <span class="r">템플릿 돌려쓰기는 금지!</span></p><p class="sub">형식은 벤치마킹하되, 통째 재사용은 '허위 콘텐츠' 제재로 이어집니다</p></section>
+
+<!-- ═══════════ Chapter 5 채널 운영 ═══════════ -->
+<section class="slide"><p class="chapnum">Chapter 5</p><p class="chaptitle">채널 운영 — 채널은 생물이다</p></section>
+
+<!-- 35 원칙 5개 -->
 <section class="slide">
   <h2 class="sec">원칙은 <em>5개뿐</em>입니다</h2>
   <ul class="list">
@@ -159,16 +391,20 @@
     <li>영상은 <span class="r">절대 삭제하지 않는다</span></li>
   </ul>
 </section>
-<section class="slide"><p class="big">실패의 원인은 화려한 게 아니라,<br>매번 <span class="g">기본기</span>였습니다.</p></section>
-<section class="slide"><p class="big">미묘한 차이 하나하나가<br><span class="r">수익이 되냐 안 되냐</span>를 가릅니다.</p></section>
 
-<!-- 29 Ch4 -->
-<section class="slide"><p class="chapnum">Chapter 4</p><p class="chaptitle">채널은 생물이다</p></section>
+<!-- 36 채널빨 -->
 <section class="slide"><p class="big"><span class="g">채널빨</span>은 존재합니다.</p><p class="sub">같은 소재 12개 영상 — 67만뷰부터 652뷰까지, 1,000배 차이</p></section>
-<section class="slide"><p class="big">영상을 <span class="r">전량 삭제했던 채널 2개</span>는<br>끝내 살아나지 못했습니다.</p><p class="sub">재가동해도 삭제 전 수준을 회복하지 못했습니다</p></section>
-<section class="slide"><p class="big">삭제해도 수익창출 자격은 남아요.<br>하지만 반응 좋던 채널이<br><span class="r">월 53만원짜리</span>가 됐습니다.</p><p class="sub">지우지 말고, 비공개로 돌리세요</p></section>
+
+<!-- 37 삭제 -->
+<section class="slide"><p class="big">영상을 <span class="r">전량 삭제했던 채널 2개</span>는<br>끝내 살아나지 못했습니다.</p><p class="sub">수익창출 자격은 남지만, 반응 좋던 채널이 <b>월 53만원짜리</b>가 됐습니다<br>— 지우지 말고, 비공개로 돌리세요</p></section>
+
+<!-- 38 죽은 채널 -->
 <section class="slide"><p class="big">노출이 죽은 채널을<br>붙잡고 계속 올리는 것 —<br><span class="r">답이 아닙니다.</span></p><p class="sub">4월 평균 19만뷰였던 채널이 6월엔 1,400이 됐습니다</p></section>
-<section class="slide"><p class="big">죽었다면, <span class="g">새 채널이 답</span>입니다.</p><p class="sub">6월에 새로 판 채널은 3주 만에 약 195만뷰, 786만원</p></section>
+
+<!-- 39 새 채널 -->
+<section class="slide"><p class="big">죽었다면, <span class="g">새 채널이 답</span>입니다.</p><p class="sub">6월에 새로 판 채널은 3주 만에 약 195만뷰, ₩786만</p></section>
+
+<!-- 40 규칙 세 줄 -->
 <section class="slide">
   <h2 class="sec">채널 운영 규칙 <em>세 줄</em></h2>
   <ul class="list">
@@ -178,24 +414,115 @@
   </ul>
 </section>
 
-<!-- 36 Ch5 -->
-<section class="slide"><p class="chapnum">Chapter 5</p><p class="chaptitle">그래도 최소 30개</p></section>
-<section class="slide"><p class="big">상위 3개 영상이<br>채널 수익의 <span class="g">53~80%</span>를 법니다.</p><p class="sub">대박 하나가 채널을 먹여살립니다 — 그래서 영상도, 채널도 '개수'가 무기입니다</p></section>
-<section class="slide"><p class="big">복권을 긁는 게 아니라,<br><span class="g">복권 공장</span>을 차리는 겁니다.</p></section>
+<!-- 41 복권 공장 -->
+<section class="slide"><p class="big">복권을 긁는 게 아니라,<br><span class="g">복권 공장</span>을 차리는 겁니다.</p><p class="sub">단, 물량만으론 안 됩니다 — <b>축 + 템플릿 고정</b>이<br>히트를 '더 자주, 더 예측 가능하게' 만듭니다</p></section>
 
-<!-- 39 2기 훅 -->
+<!-- 42 액션 플랜 -->
+<section class="slide">
+  <h2 class="sec" style="margin-bottom:2vh">제가 이번 달 하는 것 — <em>그대로 하시면 됩니다</em></h2>
+  <ul class="list" style="font-size:2.1vw">
+    <li style="font-size:2.15vw"><b>몰락(불안) 축 시리즈화</b><small>검증된 내 최강 축 — 중앙값 1.6만, 전체의 5.7배</small></li>
+    <li style="font-size:2.15vw"><b>국뽕 블루오션 선점</b><small>시장 기대값 1위 · 공급 15개뿐 — '인물+반전' 공식으로</small></li>
+    <li style="font-size:2.15vw"><b>20분 이상 대본형 고정</b><small>28분+ 중앙값이 12분 미만의 60배</small></li>
+    <li style="font-size:2.15vw"><b>뜨는 채널에 화력 집중</b><small>잘 나가는 채널 증산 · 죽은 채널은 새 채널로</small></li>
+  </ul>
+</section>
+
+<!-- ═══════════ 2기 연결 + 클로징 ═══════════ -->
 <section class="slide"><p class="big">그리고 —<br><span class="g">저만 번 게 아닙니다.</span></p><p class="sub">1기 수강생 중에 이미 <b>월 1,000만원</b> 찍은 분들이 있습니다</p></section>
 <section class="slide"><p class="big">2기에선 그분들이<br><span class="g">직접 강의</span>합니다.</p><p class="sub">"강사니까 되는 거 아니냐" — 아닙니다.<br>오늘 말씀드린 원칙, 그대로 따라 한 분들입니다</p></section>
+
+<!-- 2기 일정 캘린더 -->
+<section class="slide" style="padding-top:12vh;justify-content:flex-start">
+  <h2 class="sec" style="margin-bottom:1vh;font-size:3vw">2기는 <em>이렇게 달립니다</em> — 26년 8~9월</h2>
+  <table class="cal">
+    <tr><th class="su">일</th><th>월</th><th>화</th><th>수</th><th class="reg" style="color:var(--green-dark)">목</th><th>금</th><th class="sa">토</th></tr>
+    <tr>
+      <td class="su fre"><span class="d">8/2</span><span class="e">무료특강</span></td>
+      <td><span class="d">3</span></td><td><span class="d">4</span></td><td><span class="d">5</span></td>
+      <td class="reg"><span class="d">6</span><span class="e">정규강의 1주차</span></td>
+      <td><span class="d">7</span></td><td class="sa"><span class="d">8</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">9</span></td><td><span class="d">10</span></td><td><span class="d">11</span></td><td><span class="d">12</span></td>
+      <td class="reg"><span class="d">13</span><span class="e">정규강의 2주차</span></td>
+      <td><span class="d">14</span></td><td class="sa"><span class="d">15</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">16</span></td><td><span class="d">17</span></td><td><span class="d">18</span></td><td><span class="d">19</span></td>
+      <td class="reg"><span class="d">20</span><span class="e">정규강의 3주차</span></td>
+      <td><span class="d">21</span></td><td class="sa"><span class="d">22</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">23</span></td>
+      <td class="gst"><span class="d">24</span><span class="e">초청 강의 — 두코</span></td>
+      <td class="gry"><span class="d">25</span><span class="e">프반 공개피드백</span></td>
+      <td><span class="d">26</span></td>
+      <td class="reg"><span class="d">27</span><span class="e">정규강의 4주차</span></td>
+      <td><span class="d">28</span></td><td class="sa"><span class="d">29</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">30</span></td>
+      <td class="gst"><span class="d">31</span><span class="e">초청 강의 — 다람</span></td>
+      <td class="gry"><span class="d">9/1</span><span class="e">프반 공개피드백</span></td>
+      <td><span class="d">2</span></td>
+      <td class="reg"><span class="d">3</span><span class="e">정규강의 5주차</span></td>
+      <td><span class="d">4</span></td>
+      <td class="sa gry"><span class="d">5</span><span class="e">고수특강</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">6</span></td>
+      <td class="gst"><span class="d">7</span><span class="e">AI 특강 (미정)</span></td>
+      <td class="gry"><span class="d">8</span><span class="e">프반 공개피드백</span></td>
+      <td><span class="d">9</span></td>
+      <td class="reg"><span class="d">10</span><span class="e">정규강의 6주차</span></td>
+      <td><span class="d">11</span></td>
+      <td class="sa gry"><span class="d">12</span><span class="e">고수특강</span></td>
+    </tr>
+    <tr>
+      <td class="su"><span class="d">13</span></td>
+      <td><span class="d">14</span></td>
+      <td class="gry"><span class="d">15</span><span class="e">프반 공개피드백</span></td>
+      <td><span class="d">16</span></td>
+      <td class="reg"><span class="d">17</span><span class="e">정규강의 7주차</span></td>
+      <td><span class="d">18</span></td>
+      <td class="sa gry"><span class="d">19</span><span class="e">고수특강</span></td>
+    </tr>
+  </table>
+  <div class="callg">
+    <span><i style="background:var(--red)"></i>8/2 무료특강</span>
+    <span><i style="background:var(--green)"></i>정규강의 · 매주 목 (7주)</span>
+    <span><i style="background:#FFE14D"></i>월 1,000 고수 초청 특강 · 월</span>
+    <span><i style="background:#EEF1F4;border:1px solid var(--line)"></i>프반 공개피드백 (화) · 고수특강 (토)</span>
+  </div>
+</section>
 <section class="slide">
   <h2 class="sec">오늘 이야기가 <em>그대로 커리큘럼</em>이 됩니다</h2>
   <table class="tb">
     <tr><th>오늘 들으신 것</th><th>2기에서 손에 쥐는 것</th></tr>
-    <tr><td>카테고리가 전부다</td><td class="gg">뜨는 카테고리 조사법 — 정식 커리큘럼</td></tr>
-    <tr><td>썸네일 분석이 가장 중요</td><td class="gg">잘 뜨는 채널 벤치마킹 실습</td></tr>
-    <tr><td>그래도 최소 30개</td><td class="gg">소재→대본→영상 일체화 + 쇼츠 자동화</td></tr>
+    <tr><td>무엇이 터지나 — 소재는 감정</td><td class="gg">뜨는 카테고리 조사법 — 정식 커리큘럼</td></tr>
+    <tr><td>히트작의 공식 — 썸네일 분석</td><td class="gg">잘 뜨는 채널 벤치마킹 실습</td></tr>
+    <tr><td>복권 공장 — 물량 × 템플릿</td><td class="gg">소재→대본→영상 일체화 + 쇼츠 자동화</td></tr>
     <tr><td>정보성 다음은?</td><td class="gg">🆕 야담 · 썰 스토리 트랙 신설</td></tr>
   </table>
   <p class="note">야담 채널, 지금 테스트 중입니다 — 수익 데이터는 2기 모집글에서 처음 깝니다</p>
+</section>
+
+<!-- 야담 영상 티저 -->
+<section class="slide" style="padding-top:12.5vh">
+  <h2 class="sec" style="margin-bottom:2.5vh;font-size:3.1vw">🆕 다음 트랙, <em>야담</em> — 직접 보시죠</h2>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:2vh">
+    <div id="yadamBox" style="position:relative;width:108vh;height:60.75vh;max-width:80vw;border-radius:16px;overflow:hidden;box-shadow:0 10px 34px rgba(0,0,0,.2);background:#000;cursor:pointer">
+      <img src="images/yadam.jpg" alt="" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.18)">
+        <div style="width:7vw;height:7vw;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 24px rgba(0,0,0,.35)">
+          <span style="color:#fff;font-size:2.8vw;margin-left:.5vw">▶</span>
+        </div>
+      </div>
+    </div>
+    <a href="https://www.youtube.com/watch?v=cVYmsV-WEO0" target="_blank" rel="noopener" onclick="event.stopPropagation()" style="font-size:1.5vw;font-weight:800;color:var(--green-dark);text-decoration:none;border:2px solid var(--green);border-radius:999px;padding:.9vh 1.8vw">↗ 유튜브 새 탭에서 열기</a>
+  </div>
+  <p class="note">정보성 다음은 '스토리'입니다 — 이 채널의 수익 데이터, 2기 모집글에서 처음 깝니다</p>
 </section>
 <section class="slide">
   <h2 class="sec">프리미엄반은 <em>여기까지</em> 갑니다</h2>
@@ -206,8 +533,6 @@
   </ul>
   <p class="note">1:1 피드백 때문에 프반은 인원을 제한할 수밖에 없습니다</p>
 </section>
-
-<!-- 40 클로징 -->
 <section class="slide"><p class="big">오늘 자료는 <span class="g">정모 후기</span><br>남겨주신 분들께 드립니다!</p><p class="sub">카페에 후기 올려주시면 숫자·표 포함 정리본을 보내드려요.<br>후기에 <b>"2기"</b>까지 남겨주시면 — 야담 수익 공개와 2기 모집 소식도 <b>가장 먼저</b> 드립니다</p></section>
 <section class="slide"><p class="chapnum" style="font-size:8vw">Q&A</p><p class="sub" style="font-size:2.4vw">채널 진단 원하시는 분은 말씀해주세요. 같이 봅니다.</p></section>
 
@@ -237,6 +562,13 @@ addEventListener('keydown',e=>{
   if(e.key==='End') show(slides.length-1);
 });
 addEventListener('click',e=>{ if(e.clientX>innerWidth/2) show(i+1); else show(i-1); });
+// 야담 영상: 클릭 시 iframe으로 교체 재생 (슬라이드 넘김 방지)
+const yb=document.getElementById('yadamBox');
+if(yb) yb.addEventListener('click',e=>{
+  e.stopPropagation();
+  yb.style.cursor='default';
+  yb.innerHTML='<iframe src="https://www.youtube.com/embed/cVYmsV-WEO0?rel=0&autoplay=1" style="width:100%;height:100%;border:0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen title="천일야담"></iframe>';
+});
 </script>
 </body>
 </html>
