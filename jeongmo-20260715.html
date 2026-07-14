@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>채널 20개 굴리면서 알게 된 것들 — 7/15 정모 (오토워커 스타일)</title>
+<style>
+  :root{ --green:#00C471; --green-dark:#00A45E; --red:#FF4B4B; --ink:#111417; --gray:#8B939E; --line:#E6EAEE; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%;background:#DFE3E8;font-family:'Apple SD Gothic Neo','Pretendard',-apple-system,'Malgun Gothic',sans-serif;color:var(--ink);overflow:hidden}
+  .slide{display:none;width:100vw;height:100vh;background:#fff;position:relative;padding:11vh 8vw 9vh 7vw;flex-direction:column;justify-content:center}
+  .slide.active{display:flex}
+  /* ── 오토워커 헤더/프레임 ── */
+  .hd-left{position:absolute;top:3.4vh;left:3.2vw;font-size:1.5vw;font-weight:800}
+  .hd-left b{color:var(--green)}
+  .hd-left span{color:var(--gray);font-weight:600}
+  .hd-right{position:absolute;top:3.4vh;right:4.6vw;font-size:1.25vw;color:var(--gray);font-weight:600}
+  .hd-right b{color:var(--ink)}
+  .side{position:absolute;top:0;right:0;width:2.6vw;height:100%;border-left:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+  .side span{writing-mode:vertical-rl;font-size:1.05vw;font-weight:800;color:var(--green);letter-spacing:.12em}
+  .side span i{color:#B9C0C9;font-style:normal;font-weight:600}
+  .hr{position:absolute;top:9vh;left:3.2vw;right:5.4vw;border-bottom:1px solid var(--line)}
+  /* ── 타이포 ── */
+  .big{font-size:4.1vw;font-weight:800;line-height:1.42;text-align:center;word-break:keep-all;letter-spacing:-0.015em}
+  .big .g{color:var(--green)} .big .r{color:var(--red)}
+  .sub{font-size:1.75vw;color:var(--gray);font-weight:600;text-align:center;margin-top:4vh;word-break:keep-all;line-height:1.6}
+  .chapnum{font-size:6.2vw;font-weight:900;text-align:center;letter-spacing:-0.02em}
+  .chapnum::after{content:"";display:block;width:9vw;height:0.7vh;background:var(--green);margin:2.4vh auto 0}
+  .chaptitle{font-size:3.4vw;font-weight:800;text-align:center;margin-top:4.2vh;word-break:keep-all}
+  .badge{display:inline-block;background:var(--green);color:#fff;font-size:1.6vw;font-weight:800;padding:1.1vh 2vw;border-radius:999px}
+  .note{position:absolute;bottom:4.5vh;left:0;right:2.6vw;text-align:center;font-size:1.25vw;color:#AEB6C0;font-weight:600}
+  /* ── 표지 ── */
+  .cover{align-items:flex-start;justify-content:center}
+  .cover .desc{font-size:1.9vw;font-weight:700;line-height:1.75;color:#3A4149;word-break:keep-all}
+  .cover .title{font-size:6.6vw;font-weight:900;color:var(--green);letter-spacing:-0.02em;line-height:1.18;margin:4.5vh 0 3.5vh}
+  /* ── 카드/리스트 ── */
+  .cards{display:flex;gap:1.6vw;margin-top:2vh}
+  .card{flex:1;border:2px solid var(--line);border-radius:18px;padding:3.6vh 1.8vw;background:#FBFCFD}
+  .card h4{font-size:1.35vw;color:var(--green-dark);font-weight:900;letter-spacing:.08em;margin-bottom:1.6vh}
+  .card .t{font-size:2vw;font-weight:800;line-height:1.4;word-break:keep-all;margin-bottom:2vh}
+  .card p{font-size:1.35vw;color:#5B6470;font-weight:600;line-height:1.7;word-break:keep-all}
+  ul.list{list-style:none;width:100%}
+  ul.list li{font-size:2.15vw;font-weight:700;padding:2.2vh 0 2.2vh 3.4vw;position:relative;border-bottom:1px solid var(--line);word-break:keep-all;line-height:1.45}
+  ul.list li::before{content:"✓";position:absolute;left:.6vw;color:var(--green);font-weight:900}
+  ul.list li b{color:var(--green-dark)}
+  ul.list li .r{color:var(--red)}
+  table.tb{width:100%;border-collapse:collapse;font-size:1.8vw;font-weight:700}
+  .tb th{color:var(--gray);font-weight:800;text-align:left;padding:1.6vh 1vw;border-bottom:3px solid var(--ink)}
+  .tb td{padding:1.7vh 1vw;border-bottom:1px solid var(--line)}
+  .tb td.n,.tb th.n{text-align:right;font-variant-numeric:tabular-nums}
+  .tb .gg{color:var(--green-dark);font-weight:900}
+  .tb .rr{color:var(--red);font-weight:900}
+  h2.sec{font-size:3vw;font-weight:900;margin-bottom:4vh;word-break:keep-all}
+  h2.sec em{font-style:normal;color:var(--green)}
+  .pagenum{position:absolute;bottom:2.6vh;right:4vw;font-size:1.1vw;color:#B9C0C9;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- 1 표지 -->
+<section class="slide cover active">
+  <p class="desc">같은 도구, 같은 공정으로 4월부터 채널 20개를 굴렸습니다.<br>
+  10개는 수익창출이 났고, <b style="color:var(--red)">10개는 안 났습니다.</b><br>
+  그 차이를 실데이터로 전부 공개합니다</p>
+  <h1 class="title">채널 20개<br>굴리면서 알게 된 것들</h1>
+  <span class="badge">2026. 07. 15 (수) 디하클 정모</span>
+</section>
+
+<!-- 2 양해의 말씀 -->
+<section class="slide">
+  <p class="big" style="font-size:3vw"><span class="g">양해의 말씀!</span></p>
+  <p class="sub" style="font-size:2vw;color:#3A4149;margin-top:5vh">오늘 공개하는 수익은 유튜브 스튜디오 <b>'예상 수익' 기준 잠정치</b>입니다.<br><br>
+  채널이 특정되지 않도록 채널명과 일부 수치는 가렸습니다.<br><br>
+  '무조건 번다'가 아니라, 같은 조건에서<br><b>무엇이 결과를 갈랐는지</b> 공유하는 자리입니다.</p>
+</section>
+
+<!-- 3~5 훅 -->
+<section class="slide"><p class="big">지난 4월부터,<br><span class="g">채널 20개</span>를 굴렸습니다.</p></section>
+<section class="slide"><p class="big"><span class="g">10개는 수익창출이 났고,</span><br><span class="r">10개는 안 났습니다.</span></p></section>
+<section class="slide"><p class="big">같은 도구, 같은 공정으로<br>만든 채널들인데요.</p><p class="sub">그 차이를 오늘 다 보여드리겠습니다.</p></section>
+
+<!-- 6 성적표 -->
+<section class="slide">
+  <h2 class="sec">최근 28일 성적표 — <em>약 2,270만원</em></h2>
+  <table class="tb">
+    <tr><th>채널</th><th class="n">구독자</th><th class="n">28일 조회수</th><th class="n">예상수익</th></tr>
+    <tr><td>🟢 채널 A <span style="color:var(--green-dark);font-size:1.4vw">개설 3주</span></td><td class="n">1만 이상</td><td class="n">약 190만</td><td class="n gg">₩786만</td></tr>
+    <tr><td>🔵 채널 B</td><td class="n">2만 이상</td><td class="n">약 140만</td><td class="n">₩582만</td></tr>
+    <tr><td>🟣 채널 C</td><td class="n">2만 이상</td><td class="n">약 120만</td><td class="n">₩462만</td></tr>
+    <tr><td>🟠 채널 D</td><td class="n">2만 이상</td><td class="n">약 100만</td><td class="n">₩360만</td></tr>
+    <tr><td>🔴 채널 E <span class="rr" style="font-size:1.4vw">영상 전량 삭제했던 채널</span></td><td class="n">약 1만</td><td class="n">약 20만</td><td class="n rr">₩53만</td></tr>
+  </table>
+  <p class="note">100만뷰 ≈ 400만원. 삭제했던 채널이 하나 더 있는데(표 밖) — 4부에서 다룹니다.</p>
+</section>
+
+<!-- 7 목차 -->
+<section class="slide">
+  <h2 class="sec">LECTURE <em>CONTENTS</em></h2>
+  <div class="cards">
+    <div class="card"><h4>1부</h4><div class="t">카테고리가<br>전부다</div><p>8개 채널 전부 '경제' 하나.<br>소재가 조회수를 6~8배 가릅니다.<br>뜨는 소재는 리서치로 찾습니다.</p></div>
+    <div class="card"><h4>2부</h4><div class="t">잘 뜨는 채널의<br>썸네일 분석</div><p>제목 공식은 이미 다 똑같습니다.<br>같은 소재로 32만뷰 vs 1,800뷰,<br>미묘한 한 끗이 가릅니다.</p></div>
+    <div class="card"><h4>3 · 4 · 5부</h4><div class="t">10 vs 10,<br>채널 운영과 마인드셋</div><p>원칙 지킨 10개 전부 성공.<br>채널빨 · 삭제 금지 · 새 채널,<br>그리고 '최소 30개' 확률 게임.</p></div>
+  </div>
+</section>
+
+<!-- 8 Ch1 -->
+<section class="slide"><p class="chapnum">Chapter 1</p><p class="chaptitle">카테고리가 전부다</p></section>
+<section class="slide"><p class="big">8개 채널 전부,<br><span class="g">'경제' 하나</span>로 만들었습니다.</p></section>
+<section class="slide"><p class="big">경제 안에서 앵글만 쪼갰습니다.</p><p class="sub" style="font-size:2.3vw;color:var(--ink);font-weight:800">거시 · 생활경제 · 투자 · 돈 되는 뉴스</p></section>
+<section class="slide"><p class="big">같은 채널에서 <span class="g">소재만 바꿔도</span><br>조회수가 <span class="g">6~8배</span> 갈립니다.</p></section>
+<section class="slide"><p class="big">몰락 소재 평균 <span class="g">17.2만 뷰</span><br>vs 전체 평균 7.1만 뷰</p><p class="sub">10만뷰 넘은 대박 27개는 전부 — 몰락 · 중국 · 산업역전 소재였습니다</p></section>
+<section class="slide"><p class="big">최근엔 <span class="g">중국, 배(조선·해운)</span>가<br>터졌습니다.</p><p class="sub">산유국이 한국 항구에 줄 선 이야기 하나로 약 90만뷰<br>— 뜨는 소재는 정해진 답이 아니라, 리서치로 계속 찾는 겁니다</p></section>
+<section class="slide"><p class="big">반대로, 경제 채널에 축구를 올리면?</p></section>
+<section class="slide"><p class="big"><span class="r">98뷰</span> 나옵니다.</p><p class="sub">역사를 올리면 113뷰. 카테고리 밖 13개 영상, 대박 0개.</p></section>
+
+<!-- 16 Ch2 -->
+<section class="slide"><p class="chapnum">Chapter 2</p><p class="chaptitle">잘 뜨는 채널의 썸네일부터 분석하라</p></section>
+<section class="slide"><p class="big">저는 영상 만드는 시간보다<br><span class="g">남의 썸네일 보는 시간</span>이 더 깁니다.</p></section>
+<section class="slide"><p class="big">제목 공식은 이미 다 똑같습니다.</p><p class="sub" style="font-size:2.2vw;color:var(--ink);font-weight:800">「"인용 훅" + 실명·숫자 + ~의 진짜 이유」<br><span style="font-size:1.6vw;color:var(--gray)">296개 중 275개가 따옴표로 시작합니다</span></p></section>
+<section class="slide"><p class="big">공식은 출발점일 뿐 —<br>한 끗은 <span class="g">벤치마킹</span>에서 나옵니다.</p><p class="sub">같은 공식 안에서 어떤 인용, 어떤 숫자를 고르느냐의 차이입니다</p></section>
+<section class="slide"><p class="big">같은 태양광 소재도<br>훅 한 줄, 타이밍 따라 <span class="r">172배</span> 차이.</p><p class="sub">32만뷰 vs 1,800뷰 — 미묘한 차이가 수익을 가릅니다</p></section>
+<section class="slide">
+  <h2 class="sec">남의 썸네일에서 <em>훔쳐볼 것 5가지</em></h2>
+  <ul class="list">
+    <li><b>소재</b> — 이 채널을 지금 먹여살리는 주제 (최근 30일 상위 3개)</li>
+    <li><b>구도</b> — 인물 얼굴인가, 사물인가, 텍스트 위주인가</li>
+    <li><b>숫자</b> — 금액인가, 퍼센트인가, 기간인가</li>
+    <li><b>색</b> — 빨강(위기)인가 초록(반등)인가</li>
+    <li><b>감정</b> — 분노 · 불안 · 통쾌 중 무엇을 건드리나</li>
+  </ul>
+</section>
+<section class="slide"><p class="big">단, 썸네일 <span class="r">템플릿 돌려쓰기는 금지!</span></p><p class="sub">'허위 콘텐츠' 제재로 이어집니다</p></section>
+
+<!-- 23 Ch3 -->
+<section class="slide"><p class="chapnum">Chapter 3</p><p class="chaptitle">10 vs 10 — 말한 대로 한 채널 vs 안 한 채널</p></section>
+<section class="slide"><p class="big">말한 대로 한 10개는,<br><span class="g">전부 수익창출에 성공했고</span></p></section>
+<section class="slide"><p class="big">안 한 10개는<br><span class="r">전부 실패했습니다.</span></p></section>
+<section class="slide">
+  <h2 class="sec">원칙은 <em>5개뿐</em>입니다</h2>
+  <ul class="list">
+    <li><b>카테고리와 연관된 소재만</b> 다룬다 (이탈 금지)</li>
+    <li>시작 전에 <b>잘 뜨는 채널 썸네일 분석</b>부터</li>
+    <li>리서치로 찾은, <b>지금 뜨는 소재에 편승</b>한다</li>
+    <li>하루 1~2개, <b>꾸준히</b> 올린다</li>
+    <li>영상은 <span class="r">절대 삭제하지 않는다</span></li>
+  </ul>
+</section>
+<section class="slide"><p class="big">실패의 원인은 화려한 게 아니라,<br>매번 <span class="g">기본기</span>였습니다.</p></section>
+<section class="slide"><p class="big">미묘한 차이 하나하나가<br><span class="r">수익이 되냐 안 되냐</span>를 가릅니다.</p></section>
+
+<!-- 29 Ch4 -->
+<section class="slide"><p class="chapnum">Chapter 4</p><p class="chaptitle">채널은 생물이다</p></section>
+<section class="slide"><p class="big"><span class="g">채널빨</span>은 존재합니다.</p><p class="sub">같은 소재 12개 영상 — 67만뷰부터 652뷰까지, 1,000배 차이</p></section>
+<section class="slide"><p class="big">영상을 <span class="r">전량 삭제했던 채널 2개</span>는<br>끝내 살아나지 못했습니다.</p><p class="sub">재가동해도 삭제 전 수준을 회복하지 못했습니다</p></section>
+<section class="slide"><p class="big">삭제해도 수익창출 자격은 남아요.<br>하지만 반응 좋던 채널이<br><span class="r">월 53만원짜리</span>가 됐습니다.</p><p class="sub">지우지 말고, 비공개로 돌리세요</p></section>
+<section class="slide"><p class="big">노출이 죽은 채널을<br>붙잡고 계속 올리는 것 —<br><span class="r">답이 아닙니다.</span></p><p class="sub">4월 평균 19만뷰였던 채널이 6월엔 1,400이 됐습니다</p></section>
+<section class="slide"><p class="big">죽었다면, <span class="g">새 채널이 답</span>입니다.</p><p class="sub">6월에 새로 판 채널은 3주 만에 약 195만뷰, 786만원</p></section>
+<section class="slide">
+  <h2 class="sec">채널 운영 규칙 <em>세 줄</em></h2>
+  <ul class="list">
+    <li><b>지우지 마라</b> — 삭제는 노출 사형선고, 문제 영상은 비공개로</li>
+    <li><b>죽으면 보내줘라</b> — 회복 기다리지 말고 새 채널</li>
+    <li><b>채널빨은 받아들여라</b> — 여러 개 굴리고, 뜨는 채널에 집중</li>
+  </ul>
+</section>
+
+<!-- 36 Ch5 -->
+<section class="slide"><p class="chapnum">Chapter 5</p><p class="chaptitle">그래도 최소 30개</p></section>
+<section class="slide"><p class="big">상위 3개 영상이<br>채널 수익의 <span class="g">53~80%</span>를 법니다.</p><p class="sub">대박 하나가 채널을 먹여살립니다 — 그래서 영상도, 채널도 '개수'가 무기입니다</p></section>
+<section class="slide"><p class="big">복권을 긁는 게 아니라,<br><span class="g">복권 공장</span>을 차리는 겁니다.</p></section>
+
+<!-- 39 2기 훅 -->
+<section class="slide"><p class="big">그리고 —<br><span class="g">저만 번 게 아닙니다.</span></p><p class="sub">1기 수강생 중에 이미 <b>월 1,000만원</b> 찍은 분들이 있습니다</p></section>
+<section class="slide"><p class="big">2기에선 그분들이<br><span class="g">직접 강의</span>합니다.</p><p class="sub">"강사니까 되는 거 아니냐" — 아닙니다.<br>오늘 말씀드린 원칙, 그대로 따라 한 분들입니다</p></section>
+<section class="slide">
+  <h2 class="sec">오늘 이야기가 <em>그대로 커리큘럼</em>이 됩니다</h2>
+  <table class="tb">
+    <tr><th>오늘 들으신 것</th><th>2기에서 손에 쥐는 것</th></tr>
+    <tr><td>카테고리가 전부다</td><td class="gg">뜨는 카테고리 조사법 — 정식 커리큘럼</td></tr>
+    <tr><td>썸네일 분석이 가장 중요</td><td class="gg">잘 뜨는 채널 벤치마킹 실습</td></tr>
+    <tr><td>그래도 최소 30개</td><td class="gg">소재→대본→영상 일체화 + 쇼츠 자동화</td></tr>
+    <tr><td>정보성 다음은?</td><td class="gg">🆕 야담 · 썰 스토리 트랙 신설</td></tr>
+  </table>
+  <p class="note">야담 채널, 지금 테스트 중입니다 — 수익 데이터는 2기 모집글에서 처음 깝니다</p>
+</section>
+<section class="slide">
+  <h2 class="sec">프리미엄반은 <em>여기까지</em> 갑니다</h2>
+  <ul class="list">
+    <li><b>월 1,000 수강생 초청 특강</b> — 뭘 어떻게 했는지 직접 듣습니다</li>
+    <li><b>1:1 채널 피드백</b> — "미묘한 차이"는 혼자 보면 안 보입니다</li>
+    <li><b>튜브워커 3,000분 + suno 자동화</b> — 프반에만 열립니다</li>
+  </ul>
+  <p class="note">1:1 피드백 때문에 프반은 인원을 제한할 수밖에 없습니다</p>
+</section>
+
+<!-- 40 클로징 -->
+<section class="slide"><p class="big">오늘 자료는 <span class="g">정모 후기</span><br>남겨주신 분들께 드립니다!</p><p class="sub">카페에 후기 올려주시면 숫자·표 포함 정리본을 보내드려요.<br>후기에 <b>"2기"</b>까지 남겨주시면 — 야담 수익 공개와 2기 모집 소식도 <b>가장 먼저</b> 드립니다</p></section>
+<section class="slide"><p class="chapnum" style="font-size:8vw">Q&A</p><p class="sub" style="font-size:2vw">채널 진단 원하시는 분은 말씀해주세요. 같이 봅니다.</p></section>
+
+<div class="pagenum" style="position:fixed;z-index:9"><span id="cur">1</span> / <span id="tot"></span></div>
+
+<script>
+// 헤더/프레임을 모든 슬라이드에 주입
+document.querySelectorAll('.slide').forEach(s=>{
+  s.insertAdjacentHTML('afterbegin',
+    '<div class="hd-left"><b>오토워커</b><span>│auto worker</span></div>'+
+    '<div class="hd-right"> 강사 : <b>개발남 노씨</b></div>'+
+    '<div class="hr"></div>'+
+    '<div class="side"><span>Digital Nomad <i>High Class</i></span></div>');
+});
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+document.getElementById('tot').textContent=slides.length;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('cur').textContent=i+1;
+}
+addEventListener('keydown',e=>{
+  if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) show(i+1);
+  if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) show(i-1);
+  if(e.key==='Home') show(0);
+  if(e.key==='End') show(slides.length-1);
+});
+addEventListener('click',e=>{ if(e.clientX>innerWidth/2) show(i+1); else show(i-1); });
+</script>
+</body>
+</html>
