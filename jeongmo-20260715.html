@@ -555,7 +555,18 @@ function show(n){
   slides.forEach((s,k)=>s.classList.toggle('active',k===i));
   document.getElementById('cur').textContent=i+1;
 }
+// 숫자 입력 → 해당 페이지로 점프 (연속 입력 지원, 0.7초 뒤 또는 Enter로 이동)
+let numBuf='', numTimer=null;
+function jumpNum(){ if(numBuf){ show(parseInt(numBuf,10)-1); numBuf=''; } }
 addEventListener('keydown',e=>{
+  if(/^[0-9]$/.test(e.key)){
+    numBuf+=e.key;
+    clearTimeout(numTimer);
+    numTimer=setTimeout(jumpNum,700);
+    return;
+  }
+  if(e.key==='Enter'){ clearTimeout(numTimer); jumpNum(); return; }
+  numBuf='';
   if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)) show(i+1);
   if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)) show(i-1);
   if(e.key==='Home') show(0);
