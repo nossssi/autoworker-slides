@@ -183,9 +183,9 @@ code { background:var(--grid); border-radius:4px; padding:1px 6px; font-size:.85
       </ul>
     </div>
     <div class="card">
-      <b style="font-size:.9rem">업로드 시간대 (KST) — 막대 = 영상 수</b>
+      <b style="font-size:.9rem">업로드 시간대 (KST) — 막대 = 중위 조회수</b>
       <div id="hourChart" style="margin-top:8px"></div>
-      <p class="mut" style="margin-top:6px">저녁 18~19시(잠들기 전) 42% · 새벽 5~9시 30% — 수면 콘텐츠의 소비 리듬과 정확히 일치</p>
+      <p class="mut" style="margin-top:6px">올리는 양은 저녁 18~19시(42%)에 몰리지만, <b>중위 조회수는 새벽 5시(4.1만)·오후 14시(3.5만)가 밀집 시간대(18~19시 1.4~1.9만)의 2배</b> — 경쟁이 덜한 시간대가 편당 효율은 더 좋다. 흐린 막대(⚠︎)는 표본 3개 미만이라 참고만.</p>
     </div>
   </div>
 
@@ -405,11 +405,11 @@ function hideTip() { tip.style.display='none'; }
 
 // ---- 8. 시간대 ----
 (() => {
-  const max = Math.max(...DATA.hours.map(h=>h.n));
+  const max = Math.max(...DATA.hours.map(h=>h.med));
   document.getElementById('hourChart').innerHTML = DATA.hours.map(h =>
     `<div class="hs-row" style="padding:2px 0"><div class="db-label" style="width:44px">${String(h.h).padStart(2,'0')}시</div>
-     <div class="tbar-wrap" style="flex:1"><div class="tbar" style="width:${h.n/max*70}%;height:11px"></div>
-     <span style="font-weight:600;font-size:.75rem">${h.n}개 <span class="mut">중간 ${fmt(h.med)}</span></span></div></div>`).join('');
+     <div class="tbar-wrap" style="flex:1"><div class="tbar" style="width:${h.med/max*70}%;height:11px;${h.n<3?'opacity:.35':''}"></div>
+     <span style="font-weight:600;font-size:.75rem">중간 ${fmt(h.med)} <span class="mut">· ${h.n}개${h.n<3?' ⚠︎표본적음':''}</span></span></div></div>`).join('');
 })();
 </script>
 </body>
