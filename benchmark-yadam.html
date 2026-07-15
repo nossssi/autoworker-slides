@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>야담 채널 벤치마킹 — 최근 4주 TOP 10 분석</title>
+<style>
+:root { --surface:#fcfcfb; --page:#f9f9f7; --ink:#0b0b0b; --ink2:#52514e; --mut:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --blue:#2a78d6; --blue-d:#1c5cab; --red:#e34948; --gold:#b8860b; --border:rgba(11,11,11,.10); }
+@media (prefers-color-scheme: dark) { :root { --surface:#1a1a19; --page:#0d0d0d; --ink:#fff; --ink2:#c3c2b7;
+  --grid:#2c2c2a; --axis:#383835; --blue:#3987e5; --gold:#d4a017; --border:rgba(255,255,255,.10); } }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:system-ui,-apple-system,"Segoe UI",sans-serif; background:var(--page); color:var(--ink); line-height:1.6; }
+.wrap { max-width:1060px; margin:0 auto; padding:32px 20px 80px; }
+h1 { font-size:1.7rem; margin-bottom:4px; }
+h2 { font-size:1.25rem; margin:46px 0 6px; padding-top:20px; border-top:1px solid var(--grid); }
+h2 .no { color:var(--blue); margin-right:6px; }
+.sub { color:var(--ink2); font-size:.92rem; margin-bottom:14px; }
+.mut { color:var(--mut); font-size:.85em; font-weight:400; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; margin-top:12px; }
+.summary { background:var(--surface); border:1.5px solid var(--blue); border-radius:14px; padding:20px 24px; margin-top:18px; }
+.summary li { margin:8px 0 8px 18px; }
+.directive { background:var(--surface); border:2px solid var(--red); border-radius:14px; padding:22px 26px; margin-top:18px; }
+.directive h3 { font-size:1.1rem; margin-bottom:10px; }
+.directive ol { counter-reset:dir; list-style:none; }
+.directive ol li { counter-increment:dir; position:relative; padding-left:38px; margin:13px 0; }
+.directive ol li::before { content:counter(dir); position:absolute; left:0; top:2px; width:26px; height:26px;
+  background:var(--red); color:#fff; border-radius:50%; font-size:.85rem; font-weight:800; display:flex; align-items:center; justify-content:center; }
+.directive .why { display:block; color:var(--ink2); font-size:.85rem; margin-top:2px; }
+table { width:100%; border-collapse:collapse; font-size:.85rem; }
+th,td { padding:7px 8px; text-align:right; border-bottom:1px solid var(--grid); white-space:nowrap; }
+th:first-child,td:first-child { text-align:left; } th { color:var(--mut); font-weight:600; font-size:.76rem; }
+.tbl-scroll { overflow-x:auto; }
+a.chlink { color:var(--ink); text-decoration:none; border-bottom:1px dotted var(--mut); }
+a.chlink:hover { color:var(--blue); }
+.badge { display:inline-block; font-size:.7rem; font-weight:700; color:var(--bc); border:1.5px solid var(--bc); border-radius:20px; padding:0 8px; margin-left:4px; }
+.db-row { display:flex; align-items:center; gap:10px; padding:7px 0; }
+.db-label { width:110px; flex:none; font-size:.85rem; font-weight:600; text-align:right; }
+.db-track { position:relative; flex:1; height:22px; }
+.db-line { position:absolute; top:9px; height:4px; background:var(--grid); border-radius:2px; }
+.db-dot { position:absolute; top:4px; width:14px; height:14px; border-radius:50%; margin-left:-7px; border:2px solid var(--surface); }
+.db-med { background:#86b6ef; } .db-mean { background:var(--blue-d); }
+.db-val { position:absolute; top:0; font-size:.78rem; font-weight:700; white-space:nowrap; }
+.legend { display:flex; gap:16px; font-size:.8rem; color:var(--ink2); margin:4px 0 8px; flex-wrap:wrap; }
+.legend i { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; }
+.hs-row { display:flex; align-items:center; gap:10px; padding:5px 0; }
+.hs-bar { flex:1; display:flex; height:26px; border-radius:6px; overflow:hidden; gap:2px; }
+.hs-seg { position:relative; display:flex; align-items:center; justify-content:center; min-width:0; }
+.hs-lab { font-size:.72rem; font-weight:700; color:#fff; } .hs-lab.dark { color:#0b0b0b; }
+.tbar-wrap { display:flex; align-items:center; gap:8px; }
+.tbar { height:14px; background:var(--blue); border-radius:0 4px 4px 0; min-width:2px; }
+.tbar-wrap span { font-size:.8rem; font-weight:700; white-space:nowrap; }
+.sc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(430px,1fr)); gap:12px; margin-top:12px; }
+.sc-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:14px 16px; }
+.sc-head { font-size:.88rem; margin-bottom:4px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.sc { width:100%; height:auto; } .sc .tick { font-size:10px; fill:var(--mut); }
+.sc .medlab { fill:var(--red); font-weight:700; paint-order:stroke; stroke:var(--surface); stroke-width:3px; }
+.sc .dot { fill:var(--blue); opacity:.55; cursor:pointer; } .sc .dot:hover { opacity:1; }
+#tip { position:fixed; pointer-events:none; background:var(--ink); color:var(--page); padding:6px 10px; border-radius:8px; font-size:.78rem; max-width:340px; display:none; z-index:9; line-height:1.4; }
+.scale-toggle { display:flex; align-items:center; gap:8px; margin-top:12px; flex-wrap:wrap; }
+.scale-toggle button { font:inherit; font-size:.82rem; font-weight:600; padding:5px 14px; border-radius:20px; border:1.5px solid var(--axis); background:var(--surface); color:var(--ink2); cursor:pointer; }
+.scale-toggle button.on { border-color:var(--blue); color:var(--blue); }
+.hit-list { font-size:.84rem; list-style:none; } .hit-list li { margin-bottom:8px; display:flex; gap:10px; align-items:flex-start; }
+.hit-list img { width:96px; border-radius:6px; flex:none; }
+.hit-list a { color:var(--ink); text-decoration:none; } .hit-list a:hover { color:var(--blue); }
+.hit-topic { display:inline-block; font-size:.7rem; font-weight:700; color:var(--blue); border:1px solid var(--blue); border-radius:4px; padding:0 5px; margin-right:4px; }
+.callout { border-left:4px solid var(--blue); padding:12px 16px; background:var(--surface); border-radius:0 10px 10px 0; margin-top:12px; font-size:.9rem; }
+.callout.warn { border-left-color:var(--red); }
+.action li { margin-bottom:10px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:12px; }
+.thumb-row { display:flex; gap:14px; margin-top:14px; align-items:flex-start; }
+.thumb-meta { width:260px; flex:none; font-size:.85rem; }
+.thumb-meta p { color:var(--ink2); font-size:.8rem; margin-top:4px; }
+.style-tag { color:var(--blue); font-weight:600; font-size:.78rem; }
+.thumb-imgs { flex:1; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; }
+.thumb-imgs img { width:100%; border-radius:8px; display:block; }
+ol,ul { padding-left:20px; }
+code { background:var(--grid); border-radius:4px; padding:1px 6px; font-size:.85em; }
+@media (max-width:760px) { .two-col { grid-template-columns:1fr; } .thumb-row { flex-direction:column; } .thumb-meta { width:auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏯 야담 채널 벤치마킹 — 최근 4주 TOP 10 분석</h1>
+  <p class="sub"><b>2026-06-16 ~ 07-14 (4주) 업로드 롱폼 191개 전수 분석</b> · 야담 풀 102개 채널(기존 66 + 오늘 신규 발굴 36) 중 <b>4주 총 조회수 상위 10개</b> · 통계는 업로드 3일 이상 경과한 성숙 영상 171개 기준 · 수집 2026-07-14</p>
+
+  <div class="directive">
+    <h3>🎯 프리랜서 실행 지침 — 이것만 그대로 하세요</h3>
+    <ol>
+      <li><b>포맷은 "60~120분 수면용 오디오북" 하나로 고정.</b>
+        <span class="why">TOP 10 채널의 영상 길이 중간값이 전부 70~113분. 90~120분 구간에 시장 물량의 70%(120/171개)가 몰려 있고 조회수도 안 밀림. 10~20분짜리로는 이 시장에 못 낀다 — 시청시간(수익)도 롱폼이 압도.</span></li>
+      <li><b>소재의 기본값은 "며느리".</b> 매주 절반 이상을 며느리·시집살이 서사로 채울 것.
+        <span class="why">성숙 영상 171개 중 86개(50%)가 며느리 소재, 중간값 2.5만으로 전체 평균 위. 10만+ 히트 12개 전부가 며느리(5)·과부/첩(5)·꼬마 신동(2) — 이 3개 축 밖에서 히트 없음.</span></li>
+      <li><b>서사 공식: "무시당하는 약자의 기행 → 알고 보니 지혜/귀인 → 벼락부자·신분역전".</b>
+        <span class="why">1위 히트(46.5만, 월하야담)가 정확히 이 구조: "김치를 빨랫줄에 널어놓는 며느리를 모두가 비웃었지만…". 조롱→역전 프레임이 제목의 12%, 반전 장치(정체/이유/알고 보니)가 27%에 박혀 있다.</span></li>
+      <li><b>제목은 45자 내외 한 문장: [기행 묘사 or 대사 인용] + [며느리/과부/꼬마] + [반전 예고].</b> 뒤에 <code>| 야담 | 옛날이야기 | 민담 | 수면동화 | 오디오북</code> 태그를 항상 붙일 것.
+        <span class="why">본제목 길이 중간값 45자. 대사 인용("~해주세요") 시작이 20%. 검색 태그 5종(옛날이야기·수면동화·오디오북·민담·야담)은 171개 영상 대부분이 통일해서 쓰는 시장 표준.</span></li>
+      <li><b>업로드는 하루 1개, 저녁 18~19시(또는 아침 5~7시) 고정.</b>
+        <span class="why">총량 1~6위 채널 전부 일 0.8~1.0개 페이스. 업로드의 42%가 18~19시(잠들기 전 시청), 30%가 새벽 5~9시. 하루 2~3개씩 쏟아붓는 채널은 TOP 10에 없다 — 90분짜리 1개의 완성도가 답.</span></li>
+      <li><b>구독자 수는 무시하라. 채널이 어리다는 걱정도 버려라.</b>
+        <span class="why">구독 8,650명 '야담을 빚다'가 4주 총량 5위(67만). 개설 3주 된 '야담도서관'이 29만, 6월 개설 신생 5개가 이미 4주 15만+ — 전부 알고리즘 추천으로 크는 시장이라 신규 진입이 오히려 유리.</span></li>
+      <li><b>이 장르는 '바닥'이 없다 — 그러니 멈추지만 마라.</b>
+        <span class="why">성숙 영상 171개 중 1천 미만은 단 1개(0.6%). 경제 장르(8~12%가 바닥)와 달리 헛손질이 거의 없는 시장. 올리면 최소 수천은 나온다 — 기복 낮은 복덩이야담(CV 0.74)·야담을 빚다(0.83)처럼 매일 쌓는 쪽이 이긴다.</span></li>
+    </ol>
+  </div>
+
+  <div class="summary">
+    <b>📌 결론 먼저 — 5가지</b>
+    <ol>
+      <li><b>야담 시장은 '안정형 장르'다.</b> 4주 활동 채널 202개, 롱폼 총 2,000만 조회수. TOP 10이 33%(661만)를 가져가지만, 히트 의존도는 낮다 — 10만+ 히트 12개(7%)가 만드는 조회수는 36%뿐(경제 장르는 68%). <b>매일 올리는 공정 자체가 수익</b>이 되는 시장.</li>
+      <li><b>포맷이 완전히 수렴했다: 90분 수면용 오디오북.</b> TOP 10 전 채널이 60~120분 롱폼만 올리고, 태그도 "수면동화·오디오북"으로 통일. 시청자는 '듣다가 잠드는' 노년층 — 좋아요율 2.2~6.0%로 일반 장르의 2배.</li>
+      <li><b>소재는 며느리가 절반, 히트는 전부 약자 역전 서사.</b> 며느리 86개(중간 2.5만) > 과부·첩 33개(1.9만) > 꼬마 신동 20개(2.8만·기대값 1위). 히트 12개 전부 이 3개 축 — 임금·귀신·괴담물은 기대값 절반 이하.</li>
+      <li><b>구독자·채널 나이 둘 다 의미 없다.</b> TOP 10 중 3개(야담을 빚다·복덩이야담·금향야담)는 오늘 발굴 전까지 폴더에 없던 신흥 채널. 구독 8.6천이 총량 5위, 개설 3주 채널이 4주 29만. 진입장벽이 낮다 = <b>우리도 지금 시작해도 늦지 않다. 단, 같은 이유로 공급이 빠르게 늘고 있다(6월 개설 성과 채널만 5개+).</b></li>
+      <li><b>월하야담이 교과서다.</b> 하루 1개 × 110분 × 며느리/약자 서사 × 조롱→역전 제목 = 4주 137만(2위의 1.8배). 같은 공정의 복덩이야담·야담을 빚다는 히트 없이도 총량 5~6위(CV 0.74~0.83) — <b>공정은 복덩이를, 소재·제목은 월하를 베낄 것.</b></li>
+    </ol>
+  </div>
+
+  <h2><span class="no">1</span>종합 성적표 — 4주 총 조회수 순</h2>
+  <p class="sub">"기복(CV)"은 조회수가 얼마나 널뛰는지 — 낮을수록 영상마다 고르게 나옴. 🆕 = 오늘 신규 발굴로 폴더에 추가된 채널. 채널명 클릭 → 영상 목록.</p>
+  <div class="card tbl-scroll"><table id="mainTable"></table></div>
+  <div class="callout"><b>해석.</b> 1위 월하야담(137만)은 히트 4개를 가진 '히트+공정 겸장'. 반면 5~6위 야담을 빚다·복덩이야담은 <b>10만+ 히트가 0~1개인데도 총량 60만대</b> — 중간값 2만짜리 영상을 매일 쌓아서 만든 성적. 금향야담은 4주에 7개만 올리고 49만(개당 효율 압도적 1위) — 편수가 아니라 <b>편당 기대값</b>이 큰 채널도 공존한다. 기복(CV) 0.7~1.1 채널이 10개 중 7개 — 경제 장르(로또형 CV 2.7~3.2 다수)와 완전히 다른 안정 시장.</div>
+
+  <h2><span class="no">2</span>평균의 착시 — 기대값은 중간값으로</h2>
+  <p class="sub">평균(진한 점)이 중간값(연한 점)보다 훨씬 크면 소수 히트작 착시. 두 점이 가까울수록 성과가 재현 가능.</p>
+  <div class="card" id="dumbbell"></div>
+  <div class="callout"><b>해석.</b> 월하야담·산골야담은 평균이 중간값의 2.7~2.3배 — 히트작이 총량을 끌어올린 채널. 복덩이야담·야담을 빚다·황도야담은 간격이 좁다 — <b>내일 올릴 영상의 기대값이 곧 중간값인 채널</b>. 프리랜서가 "따라 하면 나도 그 숫자가 나오는" 쪽은 후자다.</div>
+
+  <h2><span class="no">3</span>히트 구조 — 조회수는 어디서 오나</h2>
+  <p class="sub">채널별 성숙 영상의 조회수 구간 분포. 회색(1천 미만)은 알고리즘이 아예 안 밀어준 영상.</p>
+  <div class="card" id="buckets"></div>
+  <div class="callout"><b>해석.</b> 171개 중 <b>1천 미만은 단 1개</b> — 이 장르에서 '0에 수렴하는 노동'은 사실상 없다. 물량의 중심은 1만~10만 구간(104개, 61%). 10만+ 히트 12개(7%)가 전체 조회수의 36%를 만들지만, 나머지 64%는 평범한 영상들의 합 — <b>히트를 노리는 게임이 아니라 타율을 유지하는 게임</b>이다.</div>
+
+  <h2><span class="no">4</span>조회수가 일정한가 — 채널별 영상 타임라인</h2>
+  <p class="sub">점 하나 = 영상 하나 (가로: 업로드일, 세로: 조회수). 빨간 점선 = 채널 중간값. 점에 마우스를 올리면 제목.</p>
+  <div class="scale-toggle"><button class="on" data-s="log">로그 스케일</button><button data-s="lin">일반 스케일</button>
+    <span class="mut">로그: 바닥의 꾸준함이 보임 · 일반: 히트작의 실제 크기가 보임</span></div>
+  <div class="sc-grid" id="scGrid"></div>
+  <div class="callout"><b>해석.</b> 복덩이야담·야담을 빚다·황도야담은 점이 중간값 주변 밴드에 모여 있다 — 알고리즘이 <b>채널 단위로 신뢰</b>를 주는 상태. 월하야담·산골야담은 밴드 위로 히트가 몇 개 튀는 형태 — 밴드 자체가 높아서 가능한 구조. 어느 채널도 점이 수백~수만에 흩어지는 로또 패턴이 아니다.</div>
+
+  <h2><span class="no">5</span>무엇이 터지나 — 소재별 기대값</h2>
+  <p class="sub">제목 기반 자동 분류(우선순위 매칭). 막대 = 소재별 조회수 중간값, 괄호 = 영상 수. 점선 = 전체 중간값.</p>
+  <div class="card" id="topicChart"></div>
+  <div class="callout"><b>해석 — 소재에도 수급이 있다.</b><br>
+    ① <b>며느리·시집살이(86개)</b>: 시장의 절반을 차지하는 대장 소재. 공급이 많은데도 중간값 2.5만으로 튼튼 — 수요가 그만큼 깊다(시청층인 60대+ 여성의 인생 서사).<br>
+    ② <b>꼬마·신동(20개)</b>: 기대값 1위(2.8만)인데 공급이 적다 — <b>지금 들어가면 가장 남는 소재.</b> 며느리와 결합("꼬마 며느리")하면 히트 확률이 더 올라간다.<br>
+    ③ <b>임금·귀신·괴담(합 12개)</b>: 기대값이 전체 중간값 아래. 야담이라는 이름 때문에 괴담을 떠올리기 쉽지만, <b>이 시장의 본질은 공포가 아니라 '약자의 인생 역전'</b>이다.</div>
+
+  <h2><span class="no">6</span>히트작 12개 해부 — 터지는 영상의 공식</h2>
+  <p class="sub">4주간 10만+ 영상 전부. 제목 클릭 → 영상.</p>
+  <div class="card"><ul class="hit-list" id="hitList"></ul></div>
+  <div class="callout"><b>히트작의 공식 (12개 공통 패턴).</b><br>
+    ① 주인공은 전부 <b>무시당하는 약자</b>: 며느리 5 · 과부/첩 5 · 꼬마 2. 양반·임금이 주인공인 히트 없음(임금은 조연으로만 등장).<br>
+    ② 제목 앞부분에 <b>이해 안 되는 기행</b>을 배치: "김치를 빨랫줄에", "푸른 벼를 베어버린", "오리 천 마리를 사 온" — 시청자가 '왜?'를 안고 클릭.<br>
+    ③ 후반에 <b>역전 예고</b>: "어사가 말을 잃은 이유", "알고 보니 임금", "하늘이 보낸 복덩이".<br>
+    ④ 길이는 65~143분 — 히트작이라고 짧지 않다. <b>클릭은 제목이, 조회수 유지는 러닝타임이 만든다.</b></div>
+
+  <h2><span class="no">7</span>영상 길이와 조회수 — 90분이 표준, 더 늘린다고 터지지 않는다</h2>
+  <p class="sub">점 = 성숙 영상 171개 (가로: 길이, 세로: 조회수 로그스케일), 선 = 15분 구간별 중간값(n≥7 구간만). 점에 마우스를 올리면 상세, 클릭하면 영상.</p>
+  <div class="card">
+    <div class="legend"><span><i style="background:var(--blue)"></i>안정형 채널(CV≤1.2 · 7개)</span><span><i style="background:var(--red)"></i>히트형(3개)</span><span><i style="background:var(--ink)"></i>― 구간 중간값</span></div>
+    <div id="durScatter"></div>
+  </div>
+  <div class="two-col">
+    <div class="card tbl-scroll"><b style="font-size:.9rem">길이 구간별 기대값</b><table id="durTable" style="margin-top:8px"></table></div>
+    <div class="card tbl-scroll"><b style="font-size:.9rem">채널 내 비교 — 짧은 절반 vs 긴 절반</b><table id="durChTable" style="margin-top:8px"></table></div>
+  </div>
+  <div class="callout"><b>해석 — 통계를 정직하게 읽으면.</b><br>
+    ① 구간 중간값 선은 <b>짧은 쪽(55~70분, 4.2만)이 가장 높아 보이지만 착시</b> — 그 구간 9개의 대부분이 고성과 채널 밤마실야담(중간값 3.9만) 것이다. 길이 효과가 아니라 채널 효과.<br>
+    ② 171개 전체의 길이-조회수 순위상관은 <b>0.04 — 사실상 무관</b>. 경제 장르는 "길면 조금 유리"(우상향 경향)라도 있었지만, 야담은 그마저 없다. 어차피 자면서 듣는 시청자라 '몇 분을 보는가'가 길이에 안 묶이기 때문.<br>
+    ③ 채널 내 비교도 짧은 쪽 승 6 vs 긴 쪽 승 4로 팽팽. 다만 <b>공정형 쌍두마차(복덩이 CV 0.74 · 야담을 빚다 0.83)는 둘 다 긴 쪽 승</b> — 바닥이 단단한 채널은 길이를 시청시간(수익)으로 바꿔 먹는다.<br>
+    ④ <b>결론: 85~115분에 시장 물량의 71%(122/171개)가 있다. 90분 전후를 표준으로 잡되, 길이로 승부 보려 하지 말 것.</b> 60분 미만은 시장 자체가 없고(2개), 120분 넘겨도 보상 없다. 길이는 입장권이지 무기가 아니다.</div>
+
+  <h2><span class="no">8</span>제목 형식과 업로드 시간대</h2>
+  <div class="two-col">
+    <div class="card">
+      <b style="font-size:.9rem">제목 형식 (성숙 171개)</b>
+      <ul style="font-size:.85rem; margin-top:8px">
+        <li>본제목 길이 <b>중간값 45자</b> (22~88자)</li>
+        <li>대사 인용(따옴표) 시작: <b>20%</b></li>
+        <li>반전 장치(정체/이유/비밀/알고 보니): <b>27%</b></li>
+        <li>조롱→역전 프레임(비웃/미쳤다/모두가): <b>12%</b></li>
+        <li>빈출 키워드: 며느리(42) · 시어머니(15) · 이유(15) · 쫓겨난(12) · 모두가(11) · 벼락부자(6)</li>
+        <li>태그 표준: <code>옛날이야기·수면동화·오디오북·민담·야담·전설</code> — 사실상 전 채널 공통</li>
+      </ul>
+    </div>
+    <div class="card">
+      <b style="font-size:.9rem">업로드 시간대 (KST) — 막대 = 영상 수</b>
+      <div id="hourChart" style="margin-top:8px"></div>
+      <p class="mut" style="margin-top:6px">저녁 18~19시(잠들기 전) 42% · 새벽 5~9시 30% — 수면 콘텐츠의 소비 리듬과 정확히 일치</p>
+    </div>
+  </div>
+
+  <h2><span class="no">9</span>썸네일 분석 — 전 채널이 'AI 한복 일러스트' 한 문법, 차별화는 그림체로</h2>
+  <p class="sub">채널별 4주 조회수 TOP 4 썸네일 (총 조회수 순). 이미지에 마우스를 올리면 제목·조회수, 클릭하면 영상.</p>
+  <div class="thumb-row"><div class="thumb-meta"><b>월하야담</b><br><span class="style-tag">웹툰풍 &#x27;기행 장면&#x27; 삽화 + 제목 전문 자막</span><p>김치 빨랫줄, 달밤의 유언 등 제목의 기행을 그대로 그림으로 재현. 텍스트 2~3줄 — 기행 묘사는 형광연두/노랑, 반전 예고는 흰/빨강. 인물보다 &#x27;상황&#x27;이 주인공. 해석: 썸네일이 제목의 삽화 — 제목·썸네일·본문이 한 몸이라 클릭 후 이탈이 적다. 4주 137만(1위)의 표준 문법.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=VDOppXMZuk8" target="_blank"><img src="https://i.ytimg.com/vi/VDOppXMZuk8/mqdefault.jpg" alt="" title="김치를 빨랫줄에 널어놓는 며느리를 모두가 비웃었지만, 그 줄을 본 어사가 충격에 말을 잃은 이유 (465,114회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=kX6nKebyGfA" target="_blank"><img src="https://i.ytimg.com/vi/kX6nKebyGfA/mqdefault.jpg" alt="" title="“한 번만 아버지인 척 해주세요&quot; 어린 누이까지 업고 온 소년, 알고 보니 그 사내는 임금이었다 그런데… (175,323회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=nAtDShragQ0" target="_blank"><img src="https://i.ytimg.com/vi/nAtDShragQ0/mqdefault.jpg" alt="" title="못 걷는 아내를 깊은 산에 버리자, &quot;고마워요, 서방님&quot; 제 발로 일어서는데.. (169,078회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=nXv77U-fni0" target="_blank"><img src="https://i.ytimg.com/vi/nXv77U-fni0/mqdefault.jpg" alt="" title="“아버지, 정녕 저 노인에게 가라 하시옵니까?” 아비의 마지막 말에 70세 노인의 첫날밤 신부가 된 아씨 (106,904회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>황도야담</b><br><span class="style-tag">어두운 밤 톤 + 시련의 표정</span><p>우는 여인, 폐가 앞 노부부 등 역전 &#x27;전(前)&#x27;의 바닥 정서를 포착. 남색·회색 저채도에 &#x27;노래포함&#x27; 뱃지. 해석: 고난 장면으로 클릭을 만들고 위로는 본편에서 주는 구조 — CV 0.96 안정형의 감정 문법.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=-YE_lnBiHLI" target="_blank"><img src="https://i.ytimg.com/vi/-YE_lnBiHLI/mqdefault.jpg" alt="" title="한 노부부가 귀신이 나오는 폐가를 세 냥에 샀을 때, 사람들은 웃었다. 그 폐가에는 숨겨진 방이 하나 있었는데.. (123,463회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=4nIRuT5QReE" target="_blank"><img src="https://i.ytimg.com/vi/4nIRuT5QReE/mqdefault.jpg" alt="" title="정경부인은 하인 복장을 하고 예비 며느리를 만나러 왔는데, 그들이 한 말로 그들에게 큰 대가를 치르게 했다. (81,201회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=KKropYQSvEw" target="_blank"><img src="https://i.ytimg.com/vi/KKropYQSvEw/mqdefault.jpg" alt="" title="혼인 전 하인으로 위장해 시댁에 잠입한 여인, 그녀가 엿들은 내용은 그녀를... (58,374회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=HeOcH8oBbRQ" target="_blank"><img src="https://i.ytimg.com/vi/HeOcH8oBbRQ/mqdefault.jpg" alt="" title="하인 취급하던 시어머니, 영의정 대감이 무릎 꿇고 절을 하자, 시댁이 뒤집히다 (55,605회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>밤마실야담</b><br><span class="style-tag">밝은 대낮 농촌 + 일하는 며느리</span><p>낫으로 벼 베기, 항아리 들여다보기 등 &#x27;행위&#x27; 중심 구도 + 형광연두·노랑 2줄, &#x27;20만&#x27; 실적 뱃지. 해석: 12개만 올리고 69만(편당 효율 상위) — 궁금증을 만드는 건 표정이 아니라 &#x27;이해 안 되는 행동&#x27; 그 자체.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=Iw_qBqt7cuA" target="_blank"><img src="https://i.ytimg.com/vi/Iw_qBqt7cuA/mqdefault.jpg" alt="" title="시집온날 푸른벼를 베어버린 며느리, 집안을 벼락부자로 만들다 (240,513회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=e1BgH6gHcQk" target="_blank"><img src="https://i.ytimg.com/vi/e1BgH6gHcQk/mqdefault.jpg" alt="" title="논에 항아리를 박은 며느리, 집안을 벼락부자로 만들다 (94,478회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=NfpujcqD2ws" target="_blank"><img src="https://i.ytimg.com/vi/NfpujcqD2ws/mqdefault.jpg" alt="" title="논 한마지기를 맡겼더니 고을 최고부자가 된 며느리 (69,533회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=URIZTtSB4GY" target="_blank"><img src="https://i.ytimg.com/vi/URIZTtSB4GY/mqdefault.jpg" alt="" title="억울하게 쫓겨난 옆집며느리를 품은 지혜로운 시어머니 (67,988회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>산골야담</b><br><span class="style-tag">고채도 동화풍 + 웃는 얼굴</span><p>방긋 웃는 꼬마며느리, 인자한 시어머니 등 갈등 대신 훈훈·힐링 프레임. 10개 중 가장 밝은 팔레트. 해석: 같은 며느리 소재를 &#x27;착한 이야기&#x27;로 파는 포지션 — 다만 CV 1.77로 기복은 큰 편.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=SPAbLfafTAc" target="_blank"><img src="https://i.ytimg.com/vi/SPAbLfafTAc/mqdefault.jpg" alt="" title="거지 떼라 욕먹던 처녀를 며느리로 들인 시어머니의 소름 돋는 안목 (261,802회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=b_BZswDbfvs" target="_blank"><img src="https://i.ytimg.com/vi/b_BZswDbfvs/mqdefault.jpg" alt="" title="논에 나무를 심은 며느리를 모두가 미쳤다 했는데… 몇 달 뒤 마을 사람들이 찾아와 빌었다! (67,530회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=_9CGhialTiY" target="_blank"><img src="https://i.ytimg.com/vi/_9CGhialTiY/mqdefault.jpg" alt="" title="며느리 셋이 사라진 시댁에, 꼬마 신부가 웃으며 들어간 이유 (61,274회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=w38lDmWahYY" target="_blank"><img src="https://i.ytimg.com/vi/w38lDmWahYY/mqdefault.jpg" alt="" title="아이 다섯 딸린 홀아비에게 딸을 시집보낸 어머니의 소름 돋는 이유 (48,013회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>야담을 빚다</b><br><span class="style-tag">고정 캐릭터 IP + 사투리 말풍선 (브랜딩 최강)</span><p>같은 꼬마 며느리 캐릭터가 전 썸네일에 반복 등장 + 우상단 금색 채널 로고 + &quot;와 마 도랏뿌겟네!!!&quot; 사투리 말풍선. 해석: 구독 8.6천으로 총량 5위를 만든 핵심 — 썸네일만 봐도 채널을 알아보게 만든 상태. 경제 장르 1위 채널과 같은 전략.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=PGt21kiN8TQ" target="_blank"><img src="https://i.ytimg.com/vi/PGt21kiN8TQ/mqdefault.jpg" alt="" title="호랑이 시아버지를 두 손 들게 한 못 말리는 꼬마 며느리, 집안을 일으켜 세우다 (95,851회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=940byWv3ojk" target="_blank"><img src="https://i.ytimg.com/vi/940byWv3ojk/mqdefault.jpg" alt="" title="시집 온 첫날 도련님을 업고 담을 넘어버린 천방지축 꼬마며느리, 온 고을이 뒤집혔다 (63,474회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=gWF-8fMBdtk" target="_blank"><img src="https://i.ytimg.com/vi/gWF-8fMBdtk/mqdefault.jpg" alt="" title="충청도에서 제일 느린 종갓집에 시집 온 성격 급한 경상도 며느리 (63,290회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=lT0c1vAYnxE" target="_blank"><img src="https://i.ytimg.com/vi/lT0c1vAYnxE/mqdefault.jpg" alt="" title="여덟 살 꼬마가 과거장에서 장원을 차지하자, 온 조정이 술렁이는데.. (59,952회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>복덩이야담</b><br><span class="style-tag">결의에 찬 소년 주인공 + 갈등 구도</span><p>무덤 파는 소년, 손가락질 받는 며느리 등 위기·대립의 순간 + 빨강 키워드 강조. 파란 옷 소년이 반(半)고정 캐릭터. 해석: 소재와 표정 문법을 좁혀 바닥을 만든 공정형 — CV 0.74로 10개 중 기복 최저.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=q0SZq_0Q-Xo" target="_blank"><img src="https://i.ytimg.com/vi/q0SZq_0Q-Xo/mqdefault.jpg" alt="" title="쫓기던 비단옷의 소년이 도움을 청하자 , 흙속에 묻어버린 천재아이 , 과연 소년의 정체는? (82,878회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=7jeuuY_Pgh0" target="_blank"><img src="https://i.ytimg.com/vi/7jeuuY_Pgh0/mqdefault.jpg" alt="" title="집안이 풍비박산나자 전재산으로 100명의 노비사온 꼬마며느리 , 아이의 숨겨진 진짜 계획은? (68,031회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=2v8Br7wySi4" target="_blank"><img src="https://i.ytimg.com/vi/2v8Br7wySi4/mqdefault.jpg" alt="" title="시댁 전재산으로 며느리가 돌무더기산 사온 진짜이유 (63,362회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=3LXi1_xChDU" target="_blank"><img src="https://i.ytimg.com/vi/3LXi1_xChDU/mqdefault.jpg" alt="" title="&quot;다 무너진 폐가만 주십시오!&quot; 계모에게 폐가만 받고 쫓겨난 고아형제 , 폐가엔 누구도 모르는 숨어있는 비밀이.. (60,789회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>금향야담</b><br><span class="style-tag">반실사 극화체 + 따옴표 대사 인용 (편당 효율 1위)</span><p>장독대·병풍·궁궐 소품까지 그린 고밀도 작화 + &quot;아주머니, 비올 땐 장독을 열어두세요&quot; 대사 인용 + !? 이모트. 해석: 4주에 7개만 올리고 49만 — 물량 대신 편당 완성도로 승부하는 채널의 썸네일다운 밀도.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=AWk2eoC9zk8" target="_blank"><img src="https://i.ytimg.com/vi/AWk2eoC9zk8/mqdefault.jpg" alt="" title="&quot;비올때 장독을 뚜껑을 열어두세요.&quot; 망한 과부의 주막을 벼락부자로 만든 거지아이의 정체는? (246,500회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=1Lo7Cqbnh8U" target="_blank"><img src="https://i.ytimg.com/vi/1Lo7Cqbnh8U/mqdefault.jpg" alt="" title="&quot;쉿, 나으리 병풍뒤에 누군가 있어요!&quot; 거지아이가 건넨 쪽지를 본 부잣집 대감님은 다음날... (132,306회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=wxG0tpJcitA" target="_blank"><img src="https://i.ytimg.com/vi/wxG0tpJcitA/mqdefault.jpg" alt="" title="바닷가 절벽에 묶여 죽어가던 사내를 왕인줄 모르고 구해준 12살 천재소년 (55,731회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=5tQwD-6Oezo" target="_blank"><img src="https://i.ytimg.com/vi/5tQwD-6Oezo/mqdefault.jpg" alt="" title="아들 무덤 찾은 양반집 대감 부부, 묘지에서 울고 있는 10살 거지아이와 마주치는데... (45,044회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>뚱이야담</b><br><span class="style-tag">SD 치비 카툰 + 소품 유머 (유일한 개그 톤)</span><p>오리 천 마리, 벌통 100개, 썩은 콩 가마니 등 기행 &#x27;소품&#x27;을 귀여운 치비 그림으로. &#x27;10만&#x27; 뱃지, 파랑/빨강 형광 텍스트. 해석: 10개 중 유일하게 웃음 코드로 차별화 — 꼬마며느리 히트(12.8만)도 이 톤에서 나왔다.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=A7rNMRPivwI" target="_blank"><img src="https://i.ytimg.com/vi/A7rNMRPivwI/mqdefault.jpg" alt="" title="시아버지 비상금으로 오리 천 마리를 사 온 미친 며느리, 알고 보니 하늘이 보낸 복덩이였다 (127,951회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=-bsiXHqq12s" target="_blank"><img src="https://i.ytimg.com/vi/-bsiXHqq12s/mqdefault.jpg" alt="" title="남들 다 버리는 썩은 콩을 돈 주고 사 모은 며느리, 팔도 명의도 못 고친 사또를 살리다 (98,689회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=diOZ6ji4dyU" target="_blank"><img src="https://i.ytimg.com/vi/diOZ6ji4dyU/mqdefault.jpg" alt="" title="매일 밥 세 그릇씩 축내던 식충이 며느리, 알고 보니 온 고을을 구할 천하장사였다 (39,341회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=dl1pyx8lCQo" target="_blank"><img src="https://i.ytimg.com/vi/dl1pyx8lCQo/mqdefault.jpg" alt="" title="벌통 100개 들인 엉뚱한 며느리, 사라진 남편과 재산 노린 얄미운 시숙 소동기 (34,446회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>송림야담</b><br><span class="style-tag">청춘 남녀 투샷 + 로맨스 구도</span><p>잘생긴 머슴 × 양반집 딸 등 남녀 페어가 화면 중심 — 며느리 서사보다 혼사·연분 축. 대사 인용 + 노랑 강조. 해석: 위기·역전 일색인 장르에서 &#x27;설렘&#x27; 감정을 파는 포지션.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=jKatQ6Gd__s" target="_blank"><img src="https://i.ytimg.com/vi/jKatQ6Gd__s/mqdefault.jpg" alt="" title="쫓기던 과부를 소달구지 속에 숨겨준 농부, 하루아침에 팔자가 뒤집혔다! (130,868회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=UNYpm0MPrhw" target="_blank"><img src="https://i.ytimg.com/vi/UNYpm0MPrhw/mqdefault.jpg" alt="" title="머슴을 서방으로 고른 양반집 딸의 진짜 이유 (60,418회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=pY0K82IGzuo" target="_blank"><img src="https://i.ytimg.com/vi/pY0K82IGzuo/mqdefault.jpg" alt="" title="5년 동안 소식 없던 남편이 어느 날 아이 하나를 데리고 돌아왔다! (33,188회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=kFvGDTzlsHo" target="_blank"><img src="https://i.ytimg.com/vi/kFvGDTzlsHo/mqdefault.jpg" alt="" title="7냥에 만삭 노비를 산 바보 머슴… 3달 뒤 모두가 경악했다! (30,610회)" loading="lazy"></a></div></div>
+  <div class="thumb-row"><div class="thumb-meta"><b>손녀야담</b><br><span class="style-tag">미녀 클로즈업 + 3줄 텍스트</span><p>예쁜 여성 얼굴이 화면 절반 이상 — 10개 중 인물 클로즈업 비중 최고. 첩·씨받이 등 자극 소재 + 빨강·노랑 최대 3줄. 해석: 11개로 43만, 중간값 3.5만(전체 3위) — &#x27;얼굴이 만드는 클릭&#x27;의 실증. CV 0.86으로 안정적이기까지 하다.</p></div><div class="thumb-imgs"><a href="https://www.youtube.com/watch?v=f-gmhYE6drQ" target="_blank"><img src="https://i.ytimg.com/vi/f-gmhYE6drQ/mqdefault.jpg" alt="" title="대를 끊는 년!&quot; 씨받이 들이자 오백 냥 품에 숨기고 쫓겨난 며느리, 마루 밑 종이 한 장에 적힌 비밀에 모두가 경악했다 (126,848회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=_eVdVxCzdZI" target="_blank"><img src="https://i.ytimg.com/vi/_eVdVxCzdZI/mqdefault.jpg" alt="" title="서방이 들인 첩이 아들을 낳은 날부터 팔자가 활짝 핀 조강지처 며느리, 집이 넘어가던 날 보따리 하나 들고 대문을 나서다 (65,881회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=t720asP6WEc" target="_blank"><img src="https://i.ytimg.com/vi/t720asP6WEc/mqdefault.jpg" alt="" title="남편이 세 번째 첩을 들인 날, 쫓겨난 조강지처 며느리의 팔자가 활짝 핀 이유 (62,481회)" loading="lazy"></a><a href="https://www.youtube.com/watch?v=HAdMqoN2s3Y" target="_blank"><img src="https://i.ytimg.com/vi/HAdMqoN2s3Y/mqdefault.jpg" alt="" title="바보 아내와 시어머니를 산 속에 버리자 서방님,감사해요  벌떡 일어나는데 눈빛이 완전히 달라졌다 (53,472회)" loading="lazy"></a></div></div>
+  <div class="callout"><b>공통 공식 — 10개 채널이 공유하는 것.</b><br>
+    ① <b>전부 AI 일러스트, 실사 0.</b> 한복 인물 + 조선 배경 고정 — 실사·AI 합성이 표준인 경제 장르와 달리, 이 장르는 '옛날이야기 그림책' 세계관 자체가 포맷이다.<br>
+    ② <b>제목을 거의 그대로 2~3줄 얹는다.</b> 텍스트가 화면의 1/3 이상, 키워드만 형광연두·노랑·빨강으로 강조 — 경제 장르의 "인용 1줄 + 결론 1줄" 공식에 해당하는 이 장르의 자막 문법.<br>
+    ③ <b>인물 표정이 감정 신호등.</b> 놀람(!?)·분노·눈물·미소가 큼직하게 — 주 시청층(장노년)이 텍스트를 읽기 전에 서사를 읽게 만든다.<br>
+    ④ <b>소재가 겹치니 그림체가 채널 식별자.</b> 치비 개그(뚱이) ↔ 동화풍(산골) ↔ 웹툰(월하·복덩이) ↔ 반실사(금향·손녀)로 스펙트럼이 갈리고, 브랜딩 최강(야담을 빚다)은 고정 캐릭터+로고까지 박는다.<br>
+    ⑤ <b>우리 실행: 그림체 하나를 정해 전 영상 통일 + 고정 캐릭터.</b> 월하식 '기행 장면 삽화'로 클릭을 만들고, 야담을 빚다식 캐릭터 반복으로 재방문을 만드는 결합이 최적.</div>
+
+  <h2><span class="no">10</span>전략적 시사점 — 그래서 뭘 해야 하나</h2>
+  <div class="card">
+    <ol class="action">
+      <li><b>공정을 복제하라, 히트를 쫓지 마라.</b> 이 시장의 승리 조건은 "며느리 서사 × 90분 × 매일 1개 × 18시 업로드"라는 공정의 반복이다. 히트는 공정이 돌아가는 채널에 알고리즘이 얹어주는 보너스다(월하야담의 히트 4개도 매일 업로드 27개 중에서 나왔다).</li>
+      <li><b>첫 달 목표는 '중간값 1만'.</b> TOP 10의 중간값이 1.3만~5만이고 바닥이 없는 시장이므로, 30개 올려서 중간값 1만이 안 나오면 소재·제목이 공식에서 벗어난 것 — 위 지침 2~4번을 다시 볼 것.</li>
+      <li><b>꼬마 신동 × 며느리 결합 소재를 선점하라.</b> 기대값 1위(2.8만)인데 공급 20개뿐. "꼬마 며느리" 계열 히트(뚱이야담 12.8만, 야담을 빚다 9.6만)가 이미 검증됨.</li>
+      <li><b>속도가 중요하다.</b> 6월 한 달에만 성과 신생 채널 5개+ 등장(야담도서관 3주 만에 29만). 시장이 크는 속도보다 공급이 늘어나는 속도가 빨라지면 경제 장르처럼 레드오션화된다 — <b>선점 창은 지금부터 몇 달이다.</b></li>
+      <li><b>이 문서의 숫자는 4주짜리 스냅샷이다.</b> 매달 같은 분석을 돌려서(유튜브 파인더 → 야담 폴더 → 4주 분석) 소재별 기대값 변화를 추적할 것 — 며느리 소재가 포화되면 다음 축이 반드시 나온다.</li>
+    </ol>
+  </div>
+
+  <p class="mut" style="margin-top:40px">데이터: YouTube Data API v3 · 2026-07-14 수집 · 야담 풀 102개 채널 중 4주(6/16~7/14) 총 조회수 TOP 10 · 롱폼(3분+) 191개, 통계는 업로드 3일+ 경과 171개 기준 · 조회수는 수집 시점 누적치</p>
+</div>
+<div id="tip"></div>
+<script>
+const DATA = {"summary": [{"name": "월하야담", "id": "UC_5Xm81nTsHl4pfGSwdYqUw", "subs": 31500, "opened": "2026-03", "src": "existing", "n": 27, "total": 1375593, "mean": 54051, "median": 18579, "cv": 1.79, "top10": 47, "perday": 1.0, "dur": 111, "like": 4.27, "b": [0, 10, 11, 4]}, {"name": "황도야담", "id": "UCkiulJOEQwZgFdHExnrW5YA", "subs": 19100, "opened": "2026-05", "src": "existing", "n": 29, "total": 755515, "mean": 29790, "median": 19246, "cv": 0.96, "top10": 27, "perday": 1.0, "dur": 92, "like": 5.97, "b": [0, 9, 15, 1]}, {"name": "밤마실야담", "id": "UCNyQVIoDjRK6bSZLDLyzPlg", "subs": 34300, "opened": "2013-01", "src": "existing", "n": 12, "total": 688804, "mean": 59485, "median": 39439, "cv": 1.05, "top10": 37, "perday": 0.4, "dur": 70, "like": 2.24, "b": [0, 1, 9, 1]}, {"name": "산골야담", "id": "UChczrPnaju9mGqxJXMGVX8Q", "subs": 25500, "opened": "2026-04", "src": "existing", "n": 24, "total": 675174, "mean": 30433, "median": 12579, "cv": 1.77, "top10": 49, "perday": 0.9, "dur": 101, "like": 3.67, "b": [0, 10, 11, 1]}, {"name": "야담을 빚다", "id": "UC7ZQ31YmPBPvFC0YIyTtk8Q", "subs": 8650, "opened": "2026-04", "src": "new", "n": 25, "total": 672374, "mean": 29810, "median": 25682, "cv": 0.83, "top10": 24, "perday": 0.9, "dur": 111, "like": 4.0, "b": [1, 6, 15, 0]}, {"name": "복덩이야담", "id": "UCG9mHvhn55-2sgyXtCTOH3Q", "subs": 13600, "opened": "2026-01", "src": "new", "n": 23, "total": 644026, "mean": 32226, "median": 20524, "cv": 0.74, "top10": 25, "perday": 0.8, "dur": 92, "like": 3.95, "b": [0, 5, 14, 0]}, {"name": "금향야담", "id": "UChz2wQcP80rNfo-3xHxgbZg", "subs": 17600, "opened": "2026-02", "src": "new", "n": 7, "total": 489457, "mean": 81394, "median": 50388, "cv": 1.05, "top10": 50, "perday": 0.2, "dur": 74, "like": 3.63, "b": [0, 2, 2, 2]}, {"name": "뚱이야담", "id": "UCyiBBQvrF1-7MjISrd7oXCg", "subs": 12700, "opened": "2026-02", "src": "existing", "n": 14, "total": 436954, "mean": 32914, "median": 17644, "cv": 1.11, "top10": 30, "perday": 0.5, "dur": 103, "like": 3.7, "b": [0, 3, 9, 1]}, {"name": "송림야담", "id": "UCcV_SLaGHK9ifJEVv5UiMew", "subs": 29000, "opened": "2026-04", "src": "existing", "n": 19, "total": 436524, "mean": 23851, "median": 14250, "cv": 1.23, "top10": 45, "perday": 0.7, "dur": 104, "like": 4.16, "b": [0, 6, 11, 1]}, {"name": "손녀야담", "id": "UC3FMKyCPX-Pj33e_34I1nRw", "subs": 11200, "opened": "2026-01", "src": "existing", "n": 11, "total": 434119, "mean": 41898, "median": 35228, "cv": 0.86, "top10": 30, "perday": 0.4, "dur": 113, "like": 4.46, "b": [0, 2, 7, 1]}], "videos": [{"c": 4, "id": "KgESt6qxb2Y", "t": "눈 속에 쓰러진 아이를 거둔 부자, 아이를 거둔 복은 엉뚱하게도 그 집 종에게 찾아왔다", "d": "06-17", "h": 6, "ts": 1781643619.0, "v": 9646, "m": 47, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "fUV5Kad_eFw", "t": "거지 소년이 무대에 오르자 비웃던 양반들, 소년의 노래에 정적이 흐르다가 끝내 오열하는데..", "d": "06-17", "h": 7, "ts": 1781649935.0, "v": 22812, "m": 86, "mt": 1, "tp": "꼬마·신동"}, {"c": 7, "id": "3X8G5I3-Ses", "t": "양반 규수 50명을 돌려보내고 화전민 흉터 딸을 며느리로 들인 시어머니, 1년 뒤 온 고을이 무릎을 꿇었다", "d": "06-17", "h": 16, "ts": 1781679622.0, "v": 2009, "m": 103, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "zY3lG-cT6eU", "t": "공동묘지 파는 며느리를 모두가 비웃었는데.. 장맛비 그친 뒤 온 동네가 무릎 꿇은 사연", "d": "06-17", "h": 18, "ts": 1781686833.0, "v": 19771, "m": 136, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "Eifm7kH_J-8", "t": "첩 아들은 글 공부시키고 본처 아들은 소몰이시킨 남편, 본처가 고맙다며 웃은 이유", "d": "06-17", "h": 19, "ts": 1781693293.0, "v": 10472, "m": 97, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "mpbtsl59bIQ", "t": "시댁의 전 재산인 소를 장터에 팔아버린 며느리… 가을이 되자 모두가 무릎 꿇었다", "d": "06-17", "h": 19, "ts": 1781693431.0, "v": 28749, "m": 109, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "RgR8u-0IVPU", "t": "자객들에게 쫓기던 암행어사를 절벽으로 밀어버린 거지아이", "d": "06-18", "h": 6, "ts": 1781730023.0, "v": 4272, "m": 68, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "mJu2p5zsEAs", "t": "가난한 평민 집에 시집 간 한양 최고 양반가 규수", "d": "06-18", "h": 7, "ts": 1781736302.0, "v": 23804, "m": 122, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "nAtDShragQ0", "t": "못 걷는 아내를 깊은 산에 버리자, \"고마워요, 서방님\" 제 발로 일어서는데..", "d": "06-18", "h": 18, "ts": 1781773226.0, "v": 169078, "m": 121, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "twkdRgCyoNk", "t": "불길한 사주라며 딸과 함께 쫓겨난 며느리, 모자란 줄 알았던 딸이 하늘을 보더니...", "d": "06-18", "h": 18, "ts": 1781775216.0, "v": 15218, "m": 49, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "MA072_SW1R0", "t": "기생과 살겠다며 떠난 남편, 3년 뒤 아내 앞에 무릎꿇다...!", "d": "06-18", "h": 19, "ts": 1781779711.0, "v": 7251, "m": 104, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "DyCLgvYK-p0", "t": "장터에서 7냥에 끌려온 임산부 여종을 며느리로 품은 지혜로운 시어머니", "d": "06-18", "h": 19, "ts": 1781779838.0, "v": 43882, "m": 99, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "nFYCBgAbL7Y", "t": "\"배가 고프실 텐데, 우선 이것으로 허기부터 달래시지요.\" 폭우가 내리는 절벽끝의 부자에게 , 음식을 권한 청상과부 , 5년뒤", "d": "06-19", "h": 5, "ts": 1781815529.0, "v": 41216, "m": 75, "mt": 1, "tp": "과부·첩·부부"}, {"c": 1, "id": "HeOcH8oBbRQ", "t": "하인 취급하던 시어머니, 영의정 대감이 무릎 꿇고 절을 하자, 시댁이 뒤집히다", "d": "06-19", "h": 7, "ts": 1781822708.0, "v": 55605, "m": 88, "mt": 1, "tp": "며느리·시집살이"}, {"c": 9, "id": "yU3Y-9FQd3o", "t": "바보 아내를 절벽에 버리자 \"버려주셔서 감사합니다\" 웃으며 말하는데.. 1년 뒤 소름돋는 일이 벌어졌다", "d": "06-19", "h": 14, "ts": 1781845233.0, "v": 16564, "m": 112, "mt": 1, "tp": "과부·첩·부부"}, {"c": 7, "id": "aNkdvoa-Y6k", "t": "세 며느리에게 돌멩이로 밥을 지어오라 한 시어머니, 막내가 뽀얀 국물을 내오자 모두가 경악했다", "d": "06-19", "h": 16, "ts": 1781852427.0, "v": 10670, "m": 93, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "ZOTVxAApm3s", "t": "“집안 대를 끊을 년!” 아들 못 낳는다 쫓겨난 며느리, 끝내 가문을 다시 일으키다", "d": "06-19", "h": 18, "ts": 1781859605.0, "v": 1302, "m": 111, "mt": 1, "tp": "며느리·시집살이"}, {"c": 6, "id": "oRMl_4ErJxQ", "t": "\"이 거지의 빚, 내가 갚겠다!\" 부잣집 마님이 장터 거지를 백 냥에 사들인 충격적인", "d": "06-19", "h": 18, "ts": 1781859628.0, "v": 1234, "m": 80, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 8, "id": "93qyM2TRyts", "t": "첩 들인 날 내쫓긴 며느리, 알고 보니 첩은 아이를 못 낳는 몸이었다", "d": "06-19", "h": 19, "ts": 1781866101.0, "v": 13360, "m": 101, "mt": 1, "tp": "며느리·시집살이"}, {"c": 3, "id": "NEVw1Jl8mfU", "t": "버린 쉰밥을 항아리에 숨긴 며느리, 3달 뒤 시댁 곳간에 돈벼락이 떨어졌다!", "d": "06-19", "h": 19, "ts": 1781866206.0, "v": 15331, "m": 98, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "-bUiZ82brKs", "t": "가난한부부 아들에게서 잃어버린 아들이 겹쳐보이는데..", "d": "06-20", "h": 7, "ts": 1781909136.0, "v": 21112, "m": 90, "mt": 1, "tp": "과부·첩·부부"}, {"c": 0, "id": "VDOppXMZuk8", "t": "김치를 빨랫줄에 널어놓는 며느리를 모두가 비웃었지만, 그 줄을 본 어사가 충격에 말을 잃은 이유", "d": "06-20", "h": 18, "ts": 1781946039.0, "v": 465114, "m": 111, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "wFwX8Gy5C8o", "t": "\"사내도 복도 못 담는 치마폭\"이라 조롱하던 첩, 그날밤 본처 앞에 청혼가마 셋이 줄섰다!", "d": "06-20", "h": 19, "ts": 1781952617.0, "v": 8130, "m": 101, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "CWC_buHYVf4", "t": "첩에겐 산삼, 며느리에겐 독초를 준 지혜로운 시어머니…그 속뜻을 알자 모두가 무릎 꿇었다", "d": "06-20", "h": 19, "ts": 1781952635.0, "v": 5882, "m": 104, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "8sx88akKJRU", "t": "\"저 바보에게 넘겨라\" 머슴에게 팔려간 여종, 그날 밤의 비밀", "d": "06-21", "h": 6, "ts": 1781989237.0, "v": 3811, "m": 76, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 2, "id": "URIZTtSB4GY", "t": "억울하게 쫓겨난 옆집며느리를 품은 지혜로운 시어머니", "d": "06-21", "h": 7, "ts": 1781992803.0, "v": 67988, "m": 70, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "tx5hgpygsUY", "t": "분가한 뚱보 며느리가 대박나자, 시어미가 \"내 돈 내놔라\"며 며느리 재산을 탐내는데..", "d": "06-21", "h": 7, "ts": 1781995500.0, "v": 5331, "m": 81, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "lnQhG-posJk", "t": "7년을 모은 칠순 잔치 비용을 몰래 다 써버린 며느리, 텅 빈 잔칫상의 숨겨진 진실에 온 고을이 무릎 꿇었다", "d": "06-21", "h": 16, "ts": 1782025212.0, "v": 6941, "m": 105, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "wuUGij4w7tA", "t": "\"저 좀 숨겨주세요\" 천둥 치는 밤 제 발로 찾아온 아이를 임금인 줄도 모르고 키운 눈먼 과부", "d": "06-21", "h": 18, "ts": 1782032425.0, "v": 2849, "m": 114, "mt": 1, "tp": "과부·첩·부부"}, {"c": 8, "id": "UNYpm0MPrhw", "t": "머슴을 서방으로 고른 양반집 딸의 진짜 이유", "d": "06-21", "h": 19, "ts": 1782038711.0, "v": 60418, "m": 99, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 3, "id": "6SIKJOyeaVc", "t": "“입만 살았다” 욕먹던 며느리, 집안 망하자 모두를 살렸다!", "d": "06-21", "h": 19, "ts": 1782038715.0, "v": 6383, "m": 105, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "CreEwGGqj5Y", "t": "\"마님, 저를 꼭 열냥에 사가셔야 합니다.\" 열냥받고 쫓겨난 과부에게 , 노비소년이 이상한 말을 하는데..", "d": "06-22", "h": 5, "ts": 1782074728.0, "v": 46863, "m": 106, "mt": 1, "tp": "과부·첩·부부"}, {"c": 1, "id": "Ia6tR3EpKhs", "t": "남편 잃고 자식까지 잃어버린 여인, 장터에서 익숙한 가락이 들려오는데..", "d": "06-22", "h": 7, "ts": 1782081939.0, "v": 8107, "m": 99, "mt": 1, "tp": "과부·첩·부부"}, {"c": 9, "id": "_eVdVxCzdZI", "t": "서방이 들인 첩이 아들을 낳은 날부터 팔자가 활짝 핀 조강지처 며느리, 집이 넘어가던 날 보따리 하나 들고 대문을 나서다", "d": "06-22", "h": 14, "ts": 1782104417.0, "v": 65881, "m": 112, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "8y4soZ5LXdQ", "t": "첩에겐 안방, 며느리에겐 헛간 내어준 시어머니, 그 매정한 처사엔 아무도 모를 까닭이 있었다", "d": "06-22", "h": 18, "ts": 1782118823.0, "v": 11743, "m": 113, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "-iZq3JYENwg", "t": "혼례날 양반 신랑을 버리고 머슴을 택한 아씨… 그가 진짜 정체를 드러내자 모두 얼어붙었다!", "d": "06-22", "h": 19, "ts": 1782125319.0, "v": 22208, "m": 105, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "yaQO8qJVzGw", "t": "새벽마다 쌀을 뿌리던 며느리에게 모두 미쳤다고 했는데… 사흘 뒤 텅 빈 쌀독이 차오르기 시작했다!", "d": "06-22", "h": 19, "ts": 1782125420.0, "v": 4875, "m": 100, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "JUteyjqEYjk", "t": "가시밭에 버려진 벙어리 며느리, 그날부터 말문이 트이고 시댁이 망해가는데...", "d": "06-23", "h": 6, "ts": 1782162013.0, "v": 50746, "m": 113, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "Ty19wR9KiUY", "t": "시아버지 홀로 병수발한지 10년, 며느리 도리하라며 며느리만 빼고 시댁식구 놀러가자, 시아버지가 보따리를 주는데..", "d": "06-23", "h": 7, "ts": 1782168327.0, "v": 39129, "m": 77, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "BTzr10gtqts", "t": "10년 조강지처를 벼랑에서 민 남편, 3년 뒤 거상이 되어 돌아온 아내의 충격 복수", "d": "06-23", "h": 16, "ts": 1782198036.0, "v": 2690, "m": 69, "mt": 1, "tp": "과부·첩·부부"}, {"c": 2, "id": "Iw_qBqt7cuA", "t": "시집온날 푸른벼를 베어버린 며느리, 집안을 벼락부자로 만들다", "d": "06-23", "h": 17, "ts": 1782201788.0, "v": 240513, "m": 69, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "a-Xgx2_ND5Y", "t": "의원 30명이 석 달을 못 푼 역병의 원인, 눈 먼 노인이 한마디로 밝혀내다", "d": "06-23", "h": 18, "ts": 1782205208.0, "v": 3039, "m": 115, "mt": 1, "tp": "기타"}, {"c": 6, "id": "wxG0tpJcitA", "t": "바닷가 절벽에 묶여 죽어가던 사내를 왕인줄 모르고 구해준 12살 천재소년", "d": "06-23", "h": 18, "ts": 1782205231.0, "v": 55731, "m": 92, "mt": 1, "tp": "꼬마·신동"}, {"c": 3, "id": "b_BZswDbfvs", "t": "논에 나무를 심은 며느리를 모두가 미쳤다 했는데… 몇 달 뒤 마을 사람들이 찾아와 빌었다!", "d": "06-23", "h": 19, "ts": 1782211523.0, "v": 67530, "m": 124, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "vT2xTUaIYa4", "t": "“오늘부터 네가 내 색시다!” 매맞던 말 못하는 여종을 품은 눈먼 도련님의 최후", "d": "06-23", "h": 19, "ts": 1782211693.0, "v": 2668, "m": 105, "mt": 1, "tp": "기타"}, {"c": 1, "id": "4nIRuT5QReE", "t": "정경부인은 하인 복장을 하고 예비 며느리를 만나러 왔는데, 그들이 한 말로 그들에게 큰 대가를 치르게 했다.", "d": "06-24", "h": 7, "ts": 1782254719.0, "v": 81201, "m": 90, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "4dEZR56FStM", "t": "피흘리며 죽어가는 비단옷 사내 구한 거지쌍둥이 , 훗날 그 선택은 조선을 뒤흔드는데", "d": "06-24", "h": 8, "ts": 1782255604.0, "v": 15326, "m": 90, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 4, "id": "KbVFU51YNyw", "t": "김치 나무 심는 가난한 과부 앞에 빚으로 사람 잡던 만석꾼이 무릎 꿇은 사연", "d": "06-24", "h": 9, "ts": 1782259234.0, "v": 866, "m": 81, "mt": 1, "tp": "과부·첩·부부"}, {"c": 9, "id": "s71mlOlz0PA", "t": "친정으로 돈을 빼돌리던 며느리에게 시어머니가 고맙다며 큰절을 올렸다", "d": "06-24", "h": 14, "ts": 1782278420.0, "v": 3653, "m": 114, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "jl01Lqajrgc", "t": "빚뿐이라 거짓말한 장인이 빈손인 척하자, 세 사위의 민낯이 드러났다", "d": "06-24", "h": 18, "ts": 1782291630.0, "v": 67860, "m": 109, "mt": 1, "tp": "기타"}, {"c": 8, "id": "kFvGDTzlsHo", "t": "7냥에 만삭 노비를 산 바보 머슴… 3달 뒤 모두가 경악했다!", "d": "06-24", "h": 19, "ts": 1782298081.0, "v": 30610, "m": 114, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 3, "id": "jINBPl2aKQI", "t": "미쳤다며 돌 맞은 며느리가 소 떼를 절벽으로 끌고 간 진짜 이유", "d": "06-24", "h": 19, "ts": 1782298202.0, "v": 31417, "m": 101, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "2v8Br7wySi4", "t": "시댁 전재산으로 며느리가 돌무더기산 사온 진짜이유", "d": "06-25", "h": 6, "ts": 1782334818.0, "v": 63362, "m": 90, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "UW2XRT_0J8E", "t": "시집 온 뒤 멀쩡한 벼를 절반이나 베어버린 며느리, 집안을 일으켜 세우다", "d": "06-25", "h": 6, "ts": 1782334821.0, "v": 1109, "m": 105, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "BfmEurJSZHw", "t": "동생들은 언니가 혼인 못한다며 비웃었다.  그러던 어느 날, 범접할 수 없는 귀인이 다가왔다.", "d": "06-25", "h": 7, "ts": 1782341118.0, "v": 55455, "m": 82, "mt": 1, "tp": "기타"}, {"c": 7, "id": "kzVLnJw1v9U", "t": "가문이 쫄딱 망했다며 거지 행색으로 귀향한 대감, 사위 셋의 본색이 드러나는 순간", "d": "06-25", "h": 16, "ts": 1782370833.0, "v": 17644, "m": 72, "mt": 1, "tp": "임금·어사·벼슬"}, {"c": 0, "id": "21d83a0ue5U", "t": "\"이 글씨 아빠 거 아닌데요?\" 역적의 아들이라 끌려온 8살이 어전을 발칵 뒤집은 사연", "d": "06-25", "h": 18, "ts": 1782378014.0, "v": 33577, "m": 119, "mt": 1, "tp": "기타"}, {"c": 8, "id": "nknXGx8KHPA", "t": "“나 없인 밥도 못 빌어먹는게!” 아내를 쫓아낸 남편, 3년 뒤 무릎 꿇고 찾아오는데..", "d": "06-25", "h": 19, "ts": 1782384486.0, "v": 24082, "m": 119, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "_CtzSFBo2Dw", "t": "새 며느리가 매일 새벽 곶감을 들고 사라지자, 뒤따라간 시어머니가 그 자리에서 무너졌다!", "d": "06-25", "h": 19, "ts": 1782384614.0, "v": 1358, "m": 108, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "e1BgH6gHcQk", "t": "논에 항아리를 박은 며느리, 집안을 벼락부자로 만들다", "d": "06-25", "h": 20, "ts": 1782386423.0, "v": 94478, "m": 69, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "E6OOmrs69kU", "t": "어머니 50세 생신날, 아들은 거짓말을 하고 며느리와 사돈이랑 밥을 먹고 있는데..", "d": "06-26", "h": 7, "ts": 1782427511.0, "v": 7856, "m": 78, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "oeLjO2kwl3M", "t": "\"제발 한번만 엄마인척 해주시면 안돼요? 청상과부에게 도와달라던 쫓기는 소녀 , 과연 그들의 운명은 ?", "d": "06-26", "h": 8, "ts": 1782428411.0, "v": 8266, "m": 91, "mt": 1, "tp": "과부·첩·부부"}, {"c": 6, "id": "AWk2eoC9zk8", "t": "\"비올때 장독을 뚜껑을 열어두세요.\" 망한 과부의 주막을 벼락부자로 만든 거지아이의 정체는?", "d": "06-26", "h": 18, "ts": 1782464409.0, "v": 246500, "m": 69, "mt": 1, "tp": "과부·첩·부부"}, {"c": 0, "id": "nXv77U-fni0", "t": "“아버지, 정녕 저 노인에게 가라 하시옵니까?” 아비의 마지막 말에 70세 노인의 첫날밤 신부가 된 아씨", "d": "06-26", "h": 18, "ts": 1782464420.0, "v": 106904, "m": 109, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "ks6DNlga_2g", "t": "장터 거지를 백 냥에 사 온 도령, 모두가 미쳤다 했던 진짜 이유", "d": "06-26", "h": 19, "ts": 1782468792.0, "v": 17710, "m": 126, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 3, "id": "SPAbLfafTAc", "t": "거지 떼라 욕먹던 처녀를 며느리로 들인 시어머니의 소름 돋는 안목", "d": "06-26", "h": 19, "ts": 1782470719.0, "v": 261802, "m": 109, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "VYVEyxxxt80", "t": "“굶어 죽든 말든” 내쫓은 아내가 3년 뒤 조선 최고의 거상이 되었다!", "d": "06-26", "h": 19, "ts": 1782470884.0, "v": 5765, "m": 104, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "PGt21kiN8TQ", "t": "호랑이 시아버지를 두 손 들게 한 못 말리는 꼬마 며느리, 집안을 일으켜 세우다", "d": "06-27", "h": 6, "ts": 1782507621.0, "v": 95851, "m": 100, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "3010QwJzbZE", "t": "어느 날 저녁 나이 든 침모를 몰래 미행했다가 충격적인 진실을 알게 되었다..", "d": "06-27", "h": 7, "ts": 1782513913.0, "v": 48523, "m": 91, "mt": 1, "tp": "기타"}, {"c": 2, "id": "NfpujcqD2ws", "t": "논 한마지기를 맡겼더니 고을 최고부자가 된 며느리", "d": "06-27", "h": 11, "ts": 1782527692.0, "v": 69533, "m": 74, "mt": 1, "tp": "며느리·시집살이"}, {"c": 9, "id": "5DP3N09ob6U", "t": "혼례 첫날 밤, 가시마다 독이 밴 가시밭길에 혼자 버려진 새색시, 26년간 숨겨온 비밀", "d": "06-27", "h": 14, "ts": 1782537533.0, "v": 4703, "m": 117, "mt": 1, "tp": "과부·첩·부부"}, {"c": 7, "id": "4WTnYA33OSs", "t": "\"우리 며느리가 미쳤어요!\" 사기꾼이 오자 몰래 윙크한 이유", "d": "06-27", "h": 16, "ts": 1782543609.0, "v": 10504, "m": 86, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "fCrlORRcWEA", "t": "시집온날 곳간을 태워버린  며느리, 쫄딱 망한 시댁을 벼락부자로 만들다", "d": "06-27", "h": 18, "ts": 1782550822.0, "v": 35237, "m": 108, "mt": 1, "tp": "며느리·시집살이"}, {"c": 3, "id": "IEjWGl7ZgWQ", "t": "“이 철없는 것아!” 볍씨를 삶은 며느리, 온 마을을 구하고 벼락부자 됐다!", "d": "06-27", "h": 19, "ts": 1782557414.0, "v": 15957, "m": 95, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "t5O9llW9pB4", "t": "첩을 엄마라 부르라던 남편, 쫓겨난 본처가 3년 뒤 팔자 폈다!", "d": "06-27", "h": 21, "ts": 1782563556.0, "v": 6654, "m": 107, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "zS9dlmjW854", "t": "미쳤다 손가락질 받으며 마른 논을 파던 며느리, 온 집안을 벼락부자로 만든 사연", "d": "06-28", "h": 6, "ts": 1782594028.0, "v": 7472, "m": 112, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "-YE_lnBiHLI", "t": "한 노부부가 귀신이 나오는 폐가를 세 냥에 샀을 때, 사람들은 웃었다. 그 폐가에는 숨겨진 방이 하나 있었는데..", "d": "06-28", "h": 7, "ts": 1782600325.0, "v": 123463, "m": 143, "mt": 1, "tp": "과부·첩·부부"}, {"c": 0, "id": "JnD_h9GOhxE", "t": "호랑이 백 마리 들끓는 살막골에 혼자 버려진 새색시, 3년 뒤 조선 팔도 사또들이 줄지어 무릎 꿇은 사연", "d": "06-28", "h": 18, "ts": 1782637232.0, "v": 12157, "m": 121, "mt": 1, "tp": "임금·어사·벼슬"}, {"c": 3, "id": "07p-SsK73Vc", "t": "혼삿길마다 퇴짜맞은 뚱보 셋째딸을 시어머니가 며느리로 들인 진짜 이유", "d": "06-28", "h": 19, "ts": 1782643814.0, "v": 7201, "m": 107, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "duqs6ARiknc", "t": "시집 오자마자 차례상을 발로 차 엎은 꼬마 며느리, 모두 패륜이라 했는데 그 상이 온 집안을 살렸다", "d": "06-29", "h": 6, "ts": 1782680417.0, "v": 17900, "m": 88, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "3LXi1_xChDU", "t": "\"다 무너진 폐가만 주십시오!\" 계모에게 폐가만 받고 쫓겨난 고아형제 , 폐가엔 누구도 모르는 숨어있는 비밀이..", "d": "06-29", "h": 6, "ts": 1782680424.0, "v": 60789, "m": 90, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "IOLCDxXrtG4", "t": "아무도 '안 된다' 하지 않자 안하무인이 된 대감댁 딸, 결국 이 사건으로 인생이 180도 바뀌는데..", "d": "06-29", "h": 7, "ts": 1782686706.0, "v": 5155, "m": 92, "mt": 1, "tp": "임금·어사·벼슬"}, {"c": 9, "id": "f-gmhYE6drQ", "t": "대를 끊는 년!\" 씨받이 들이자 오백 냥 품에 숨기고 쫓겨난 며느리, 마루 밑 종이 한 장에 적힌 비밀에 모두가 경악했다", "d": "06-29", "h": 14, "ts": 1782709229.0, "v": 126848, "m": 111, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "A7rNMRPivwI", "t": "시아버지 비상금으로 오리 천 마리를 사 온 미친 며느리, 알고 보니 하늘이 보낸 복덩이였다", "d": "06-29", "h": 16, "ts": 1782716435.0, "v": 127951, "m": 88, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "eNLWBbOz3tY", "t": "머리는 모자라도 마음은 천하제일, 바보 아비가 길러낸 천아들이 과거장을 뒤집다", "d": "06-29", "h": 18, "ts": 1782723638.0, "v": 2048, "m": 111, "mt": 1, "tp": "기타"}, {"c": 8, "id": "3_m1gUWortA", "t": "“80세 노파에게 장가가라”던 어미의 유언, 첫날밤 노파 집에서 들려온 젊은 여인의 울음소리", "d": "06-29", "h": 19, "ts": 1782730118.0, "v": 23830, "m": 116, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "rC6zr2ViMy0", "t": "“씨 나쁜 여자\"라며 쫓겨난 딸만 일곱 낳은 여인, 시어머니가 며느리로 들이자 온 마을이 뒤집혔다!", "d": "06-29", "h": 19, "ts": 1782730236.0, "v": 20429, "m": 102, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "xBhjl83wpsI", "t": "안동에서 시집온 며느리의 소름 돋는 능력에 모두가 경악", "d": "06-29", "h": 21, "ts": 1782735971.0, "v": 24927, "m": 67, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "LV_SmC0yFTw", "t": "구두쇠 시아버지를 벌벌 떨게 한 못 말리는 꼬마 며느리, 집안을 구해내다", "d": "06-30", "h": 6, "ts": 1782766800.0, "v": 46439, "m": 104, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "a2Bmv-caUcw", "t": "\"이 노비 내가 데려가겠소\" 전재산으로 여노비데려와 며느리삼은 시어머니, 며칠 뒤 망한가문에 상상도 못한일들이..", "d": "06-30", "h": 6, "ts": 1782766806.0, "v": 9137, "m": 92, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "i_-CYnx8GrU", "t": "가난한 여인이 홀로 3명의 고아 소년들을 키웠다. 20년 후, 이 소년들은 관아에서 어머니를 변호하는데..", "d": "06-30", "h": 7, "ts": 1782773132.0, "v": 13840, "m": 99, "mt": 1, "tp": "꼬마·신동"}, {"c": 6, "id": "1Lo7Cqbnh8U", "t": "\"쉿, 나으리 병풍뒤에 누군가 있어요!\" 거지아이가 건넨 쪽지를 본 부잣집 대감님은 다음날...", "d": "06-30", "h": 17, "ts": 1782808207.0, "v": 132306, "m": 65, "mt": 1, "tp": "꼬마·신동"}, {"c": 0, "id": "HA1GGONGLjc", "t": "“저.. 시키는 거 다 할게요” 첫서리 새벽, 7살 아이가 젊은 과부 앞에 엎드린 진짜 이유", "d": "06-30", "h": 18, "ts": 1782810029.0, "v": 51274, "m": 114, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "w38lDmWahYY", "t": "아이 다섯 딸린 홀아비에게 딸을 시집보낸 어머니의 소름 돋는 이유", "d": "06-30", "h": 19, "ts": 1782816605.0, "v": 48013, "m": 98, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "AkIcmcBpF7Y", "t": "풍년이오고 쌀 백가마를 땅에 묻어버린 며느리 , 집안을 벼락부자로 만들다", "d": "07-01", "h": 5, "ts": 1782852326.0, "v": 45476, "m": 90, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "EKQUjCjvAsg", "t": "김치 도둑을 위해, 장독대 뚜껑을 다 열어놓자 모두가 미쳤다는데..", "d": "07-01", "h": 8, "ts": 1782860548.0, "v": 7188, "m": 163, "mt": 1, "tp": "기타"}, {"c": 4, "id": "2ogIxpGc248", "t": "한양 약재를 한 손에 쥔 여인이 매 맞던 거지를 거금에 사들인 까닭, 그 정체는?", "d": "07-01", "h": 9, "ts": 1782864013.0, "v": 6494, "m": 91, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 9, "id": "t720asP6WEc", "t": "남편이 세 번째 첩을 들인 날, 쫓겨난 조강지처 며느리의 팔자가 활짝 핀 이유", "d": "07-01", "h": 14, "ts": 1782882020.0, "v": 62481, "m": 130, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "diOZ6ji4dyU", "t": "매일 밥 세 그릇씩 축내던 식충이 며느리, 알고 보니 온 고을을 구할 천하장사였다", "d": "07-01", "h": 16, "ts": 1782889224.0, "v": 39341, "m": 89, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "8VIF5oFUNGA", "t": "\"남의 시댁 등쳐먹고 무사할 줄 알았소?\" 풍비박산 난 시댁 일으킨 13살 천재 민며느리", "d": "07-01", "h": 18, "ts": 1782896402.0, "v": 24843, "m": 110, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "jKatQ6Gd__s", "t": "쫓기던 과부를 소달구지 속에 숨겨준 농부, 하루아침에 팔자가 뒤집혔다!", "d": "07-01", "h": 19, "ts": 1782902913.0, "v": 130868, "m": 111, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "SvhmXcu8cps", "t": "귀먹은 척으로 세 며느리의 본심을 알아낸 지혜로운 시어머니", "d": "07-01", "h": 19, "ts": 1782903028.0, "v": 11849, "m": 104, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "q0SZq_0Q-Xo", "t": "쫓기던 비단옷의 소년이 도움을 청하자 , 흙속에 묻어버린 천재아이 , 과연 소년의 정체는?", "d": "07-02", "h": 5, "ts": 1782938712.0, "v": 82878, "m": 99, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "OEtthLqy7WU", "t": "시어머니는 아들이 사랑하는 모든 여자를 쫓아냈다. 자신의 딸을 똑같은 집으로 시집 보내기 전까지는..", "d": "07-02", "h": 7, "ts": 1782945938.0, "v": 51064, "m": 99, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "cQSyMHDGCQw", "t": "한겨울 밤 맨발로 눈 밭에 내쫓긴 며느리, 며칠 뒤 시어머니를 무릎 꿇게 하다", "d": "07-02", "h": 10, "ts": 1782954004.0, "v": 3836, "m": 112, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "8z8EfkN0TC0", "t": "씨받이를 거부하고 쫓겨난 양반집 과부, 거지 꼬마를 만나 부자가 되는데..", "d": "07-02", "h": 18, "ts": 1782982807.0, "v": 18579, "m": 110, "mt": 1, "tp": "며느리·시집살이"}, {"c": 3, "id": "FY6tB6slYfw", "t": "양반집 외동딸을 머슴에게 시집보낸 장모, 알고 보니 집안을 살린 큰그림이었다!", "d": "07-02", "h": 19, "ts": 1782989295.0, "v": 13309, "m": 98, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "fpNKrfayjek", "t": "거지처녀를 품은 노총각 하루아침에 부자된 사연", "d": "07-02", "h": 21, "ts": 1782994507.0, "v": 30617, "m": 70, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 5, "id": "fBX6c8fs0Kg", "t": "철없는 자식이 첩을 데려오자 아끼던 며느리와 여종을 내쫓은 이유", "d": "07-03", "h": 5, "ts": 1783025100.0, "v": 7340, "m": 90, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "odtt4rF_K7E", "t": "사람들은 그녀가 결혼 못한다고 비웃었다. 그러나 그 이후 일어난 일들이 모두를 침묵하게 만드는데..", "d": "07-03", "h": 7, "ts": 1783032328.0, "v": 12390, "m": 89, "mt": 1, "tp": "기타"}, {"c": 4, "id": "940byWv3ojk", "t": "시집 온 첫날 도련님을 업고 담을 넘어버린 천방지축 꼬마며느리, 온 고을이 뒤집혔다", "d": "07-03", "h": 9, "ts": 1783036826.0, "v": 63474, "m": 112, "mt": 1, "tp": "며느리·시집살이"}, {"c": 9, "id": "HAdMqoN2s3Y", "t": "바보 아내와 시어머니를 산 속에 버리자 서방님,감사해요  벌떡 일어나는데 눈빛이 완전히 달라졌다", "d": "07-03", "h": 14, "ts": 1783054828.0, "v": 53472, "m": 113, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "-bsiXHqq12s", "t": "남들 다 버리는 썩은 콩을 돈 주고 사 모은 며느리, 팔도 명의도 못 고친 사또를 살리다", "d": "07-03", "h": 16, "ts": 1783062006.0, "v": 98689, "m": 122, "mt": 1, "tp": "며느리·시집살이"}, {"c": 6, "id": "AhLjpPS5Rvk", "t": "왕세자인줄 모르고 거지아이와 말동무 친구 되준 가난한 산골 소녀, 다음날 임금님 가마가 줄줄이...", "d": "07-03", "h": 17, "ts": 1783066519.0, "v": 7551, "m": 62, "mt": 1, "tp": "꼬마·신동"}, {"c": 0, "id": "z7tw14eXR3c", "t": "“이 아저씨 거짓말해요!” 잠행 나온 임금의 거짓말을 단번에 잡아낸 8살 천재 아이", "d": "07-03", "h": 18, "ts": 1783069203.0, "v": 95938, "m": 110, "mt": 1, "tp": "꼬마·신동"}, {"c": 8, "id": "RfEFztzKf-4", "t": "“저 여인의 정체만은 밝혀져선 안 된다” 참판이 두려워한 벼랑 끝 여인의 비밀", "d": "07-03", "h": 19, "ts": 1783075717.0, "v": 15141, "m": 98, "mt": 1, "tp": "기타"}, {"c": 3, "id": "ZKAqy-g7RDk", "t": "보따리장수로 변장해 세명의 예비며느리 시험한 조선 최고의 거상 시어머니", "d": "07-03", "h": 19, "ts": 1783075839.0, "v": 6645, "m": 101, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "Vbj6470Sdig", "t": "가문대대로 내려오는 시아버지의 땅 , 싹 다 불태워서 집안 구해낸 꼬마며느리", "d": "07-04", "h": 5, "ts": 1783111523.0, "v": 17723, "m": 92, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "KjNvZbdgQWk", "t": "대감집 도련님에게 반해 시집오겠다 하는 거지 꼴의 꼬마 며느리, 그 아이의 정체는?", "d": "07-04", "h": 7, "ts": 1783116035.0, "v": 46484, "m": 110, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "IDhMP9gwFcQ", "t": "4명의 자식들에게 돈을 주며 간병해달라했더니 결과가 충격적이었다.", "d": "07-04", "h": 7, "ts": 1783118734.0, "v": 9879, "m": 128, "mt": 1, "tp": "기타"}, {"c": 0, "id": "UardokDOhj0", "t": "한 노부부가 \"미쳤다\"는 거지총각을 열 냥에 살때, 사람들은 손가락질했다. 그런데 그 총각에게 깨진 옥가락지가 있었는데..", "d": "07-04", "h": 18, "ts": 1783155637.0, "v": 8658, "m": 112, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "6pFZaeoZMhw", "t": "논 팔아 꽃신 100켤레 뿌린 새댁, 열흘 뒤 돈 보따리를 든 사람들이 집 앞에 줄을 섰다!", "d": "07-04", "h": 19, "ts": 1783162214.0, "v": 2447, "m": 100, "mt": 1, "tp": "기타"}, {"c": 5, "id": "_qy1lHm22Lw", "t": "강물에 떠내려오는 비단옷 입은 아기 거둔 과부 , 20년뒤 조선의 운명을 송두리째 뒤흔들게 되는데..", "d": "07-05", "h": 5, "ts": 1783197932.0, "v": 20524, "m": 96, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "ppETfq6yPa0", "t": "추수를 코앞에 두고 논에 밤새 불을 놓은 천방지축 꼬마 며느리, 온 고을이 뒤집혔다", "d": "07-05", "h": 7, "ts": 1783202423.0, "v": 25486, "m": 112, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "_BekpOYcvW4", "t": "20년 만에 유배 갔다 돌아온 노인이 자신의 집으로 돌아왔을 때, 그 안에 있던 누군가를 보고 충격에 빠지는데..", "d": "07-05", "h": 7, "ts": 1783205102.0, "v": 39867, "m": 106, "mt": 1, "tp": "기타"}, {"c": 7, "id": "TpQEvqSG8JM", "t": "매일 뒷방에서 윷놀이만 하던 불량 고부, 고을 사또의 전 재산을 다 털어버린 사연", "d": "07-05", "h": 16, "ts": 1783234818.0, "v": 30939, "m": 113, "mt": 1, "tp": "임금·어사·벼슬"}, {"c": 0, "id": "E38QkQtFiOU", "t": "죽은 줄 알았던 시어머니가 새파랗게 어린 사내 손을 잡고 돌아왔는데..", "d": "07-05", "h": 18, "ts": 1783242010.0, "v": 5019, "m": 121, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "pY0K82IGzuo", "t": "5년 동안 소식 없던 남편이 어느 날 아이 하나를 데리고 돌아왔다!", "d": "07-05", "h": 19, "ts": 1783248494.0, "v": 33188, "m": 104, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "J8yeoh5Hbuo", "t": "아들보다 17살 많은 노처녀를 며느리로 들인 시어머니의 큰그림", "d": "07-05", "h": 19, "ts": 1783248571.0, "v": 4090, "m": 99, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "tk-eeX0hmDM", "t": "가뭄에 집안은 망할 판인데, 며느리만 좋아서 싱글벙글", "d": "07-05", "h": 20, "ts": 1783250732.0, "v": 41854, "m": 65, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "zCieKHBrTKE", "t": "암살위기의 사냥나온 세자에게 나타난 늑대형상의 소년 , 세자와 소년에게 숨겨진 진짜 사연", "d": "07-06", "h": 5, "ts": 1783281686.0, "v": 38889, "m": 108, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "KKropYQSvEw", "t": "혼인 전 하인으로 위장해 시댁에 잠입한 여인, 그녀가 엿들은 내용은 그녀를...", "d": "07-06", "h": 7, "ts": 1783291512.0, "v": 58374, "m": 101, "mt": 1, "tp": "며느리·시집살이"}, {"c": 4, "id": "lT0c1vAYnxE", "t": "여덟 살 꼬마가 과거장에서 장원을 차지하자, 온 조정이 술렁이는데..", "d": "07-06", "h": 9, "ts": 1783296006.0, "v": 59952, "m": 106, "mt": 1, "tp": "꼬마·신동"}, {"c": 9, "id": "bYyamzdD7yU", "t": "아내를 강물에 밀어버린 남편, 1년 뒤 암행어사의 아내가 되어 남편 앞에 섰다", "d": "07-06", "h": 14, "ts": 1783314035.0, "v": 14922, "m": 114, "mt": 1, "tp": "과부·첩·부부"}, {"c": 0, "id": "SHoqoQU4aDY", "t": "\"제가 어머니 대신 벌받을게요\" 어머니 참형 하루 전, 임금 앞에 무릎꿇은 8살 소년", "d": "07-06", "h": 18, "ts": 1783328420.0, "v": 21036, "m": 108, "mt": 1, "tp": "꼬마·신동"}, {"c": 6, "id": "5tQwD-6Oezo", "t": "아들 무덤 찾은 양반집 대감 부부, 묘지에서 울고 있는 10살 거지아이와 마주치는데...", "d": "07-06", "h": 21, "ts": 1783341911.0, "v": 45044, "m": 99, "mt": 1, "tp": "과부·첩·부부"}, {"c": 5, "id": "RY46vYmcimY", "t": "계모에게서 도망친 아이가 구한 기억잃은 청년 , 과연 그의 진짜 정체는?", "d": "07-07", "h": 3, "ts": 1783362372.0, "v": 14364, "m": 93, "mt": 1, "tp": "꼬마·신동"}, {"c": 1, "id": "F-oy8FUoHEw", "t": "계모가 몰래 내 합격증을 훔쳐서 자기 친딸에게 줘버렸는데, 오히려 내가 대박이 났다.", "d": "07-07", "h": 7, "ts": 1783377922.0, "v": 8680, "m": 99, "mt": 1, "tp": "기타"}, {"c": 4, "id": "Xh8T16cTTCI", "t": "온 고을을 가르치려고 들던 영감을 제자 삼은 아홉 살 천재 아이", "d": "07-07", "h": 9, "ts": 1783382440.0, "v": 26361, "m": 112, "mt": 1, "tp": "꼬마·신동"}, {"c": 7, "id": "3wzC-5BZyqM", "t": "시댁 재산 뺏으러 온 얄미운 시누이, 시어머니와 며느리가 처녀 귀신 분장을 한 이유", "d": "07-07", "h": 16, "ts": 1783407633.0, "v": 17380, "m": 119, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "HpkQYQY4o_I", "t": "시댁이 물려준 선산 전부를 뽕밭으로 만들어버린 며느리", "d": "07-07", "h": 18, "ts": 1783414821.0, "v": 8987, "m": 106, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "xIbgs08eY3Y", "t": "거지처녀를 며느리 삼은 지혜로운 시어머니", "d": "07-07", "h": 18, "ts": 1783418378.0, "v": 13399, "m": 79, "mt": 1, "tp": "며느리·시집살이"}, {"c": 8, "id": "uEwsbB7Ctyw", "t": "“난 얼굴만 보오” 양반집 노처녀가 고른 머슴의 소름 돋는 정체", "d": "07-07", "h": 19, "ts": 1783421310.0, "v": 18579, "m": 106, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 3, "id": "NEYjN37DlCE", "t": "시어머니 앞에서 밥 달라며 드러누운 며느리, 알고 보니 집안을 구하려던 미친 한 수였다!", "d": "07-07", "h": 19, "ts": 1783421420.0, "v": 7545, "m": 105, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "7jeuuY_Pgh0", "t": "집안이 풍비박산나자 전재산으로 100명의 노비사온 꼬마며느리 , 아이의 숨겨진 진짜 계획은?", "d": "07-08", "h": 5, "ts": 1783457105.0, "v": 68031, "m": 106, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "34XVLq9ev2s", "t": "사람들은 그녀가 가난하다는 이유로 조롱했지만, 무슨 일이 벌어질지 전혀 예상하지 못하는데..", "d": "07-08", "h": 7, "ts": 1783464323.0, "v": 4298, "m": 94, "mt": 1, "tp": "기타"}, {"c": 4, "id": "7I3_ai3PYzA", "t": "가산을 삼키러 몰려든 어른들을 물리친 꼬마 아씨", "d": "07-08", "h": 9, "ts": 1783468832.0, "v": 30302, "m": 114, "mt": 1, "tp": "꼬마·신동"}, {"c": 9, "id": "ZhFrTWm6Ikk", "t": "아내가 병들자 어린 첩을 들인 남편에게 \"감사해요 서방님\" 안방을 내어주는데...이 집에는 비밀이 있었다", "d": "07-08", "h": 14, "ts": 1783486836.0, "v": 24902, "m": 113, "mt": 1, "tp": "과부·첩·부부"}, {"c": 0, "id": "eBvZZVO1g04", "t": "\"훗날 왕비가 될 상이오!\"귀인의 상을 단번에 알아본 거지소년", "d": "07-08", "h": 18, "ts": 1783501219.0, "v": 3067, "m": 106, "mt": 1, "tp": "꼬마·신동"}, {"c": 5, "id": "vpts2PeWAuA", "t": "\"금은보화는 어미님께서 다 가지십시요 , 저희는 노비 200명을 데리고 떠나겠습니다!\" 노비200명을 선택하고 계모에게 쫓겨난", "d": "07-09", "h": 7, "ts": 1783548020.0, "v": 14336, "m": 89, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 1, "id": "-q14nWVz4QU", "t": "남루한 하인이 잠든 대감의 이불을 내리더니 “당신이 왜 여기에...” 하며 경악하는데..", "d": "07-09", "h": 7, "ts": 1783550711.0, "v": 5497, "m": 92, "mt": 1, "tp": "임금·어사·벼슬"}, {"c": 4, "id": "a0_4MjMDeoM", "t": "십 년을 입 다문 시아버지, 못 말리는 꼬마 며느리가 들어오자 벌어진 일은?", "d": "07-09", "h": 9, "ts": 1783555229.0, "v": 37505, "m": 114, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "howrBUigq8s", "t": "남편 목숨값으로 돼지 서른 마리 사 온 미친 며느리, 돼지 서른 마리로 하루아침에 만석꾼이 된 사연", "d": "07-09", "h": 16, "ts": 1783580431.0, "v": 28675, "m": 108, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "i6IH10rcXJg", "t": "원수의 눈먼 딸을 아내로 삼은 양반집 아들 1년뒤 마을 최고의 부자가 되다", "d": "07-09", "h": 18, "ts": 1783587638.0, "v": 5031, "m": 122, "mt": 1, "tp": "과부·첩·부부"}, {"c": 8, "id": "pzHznwn9xww", "t": "눈먼 과부가 아무도 안 사는 자갈밭을 찍자, 거지 소금장수는 하루아침에 부자가 됐다!", "d": "07-09", "h": 19, "ts": 1783594102.0, "v": 4388, "m": 104, "mt": 1, "tp": "과부·첩·부부"}, {"c": 3, "id": "Jr6B1_74prE", "t": "남편 셋을 잃은 여인을 며느리로 들인 시어머니의 충격적인 이유", "d": "07-09", "h": 19, "ts": 1783594230.0, "v": 3557, "m": 99, "mt": 1, "tp": "며느리·시집살이"}, {"c": 2, "id": "M3nQAtz6OSw", "t": "망해가는 시댁에 싱글벙글 웃으며 시집온 꼬마며느리", "d": "07-09", "h": 20, "ts": 1783597260.0, "v": 27319, "m": 72, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "44O0jh9Pcac", "t": "한끼에 10그릇씩먹어 집안 거덜낼뻔한 며느리, 그녀의 진짜정체는..?", "d": "07-10", "h": 6, "ts": 1783633519.0, "v": 4818, "m": 102, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "C4dAnSS5IxU", "t": "\"어르신 곁엔 돌봐줄 사람이 없고, 아이들에겐 할아버지가 없습니다. 부디 저희가 이곳에 머물게 해주십시오.\" 과부가 말했다", "d": "07-10", "h": 7, "ts": 1783637108.0, "v": 19246, "m": 107, "mt": 1, "tp": "과부·첩·부부"}, {"c": 4, "id": "OcBCocQ3qpw", "t": "하루 종일 잔소리 하는 시어머니 앞에, 싱글벙글 시집 온 꼬마 며느리", "d": "07-10", "h": 9, "ts": 1783641683.0, "v": 25878, "m": 117, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "kX6nKebyGfA", "t": "“한 번만 아버지인 척 해주세요\" 어린 누이까지 업고 온 소년, 알고 보니 그 사내는 임금이었다 그런데…", "d": "07-10", "h": 18, "ts": 1783674022.0, "v": 175323, "m": 108, "mt": 1, "tp": "꼬마·신동"}, {"c": 2, "id": "47mdC0prxWM", "t": "죽은땅 한마지기를 물려받고 싱글벙글 웃는 꼬마며느리", "d": "07-10", "h": 21, "ts": 1783685807.0, "v": 39439, "m": 70, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "nGS79ZiGLxo", "t": "천재거지아이가 은사의 무덤을 파헤치고 관을 열어본 순간, 충격적인 반전에 숨이 멎을것만 같았는데..", "d": "07-10", "h": 21, "ts": 1783686895.0, "v": 7653, "m": 110, "mt": 1, "tp": "꼬마·신동"}, {"c": 4, "id": "gWF-8fMBdtk", "t": "충청도에서 제일 느린 종갓집에 시집 온 성격 급한 경상도 며느리", "d": "07-11", "h": 6, "ts": 1783717201.0, "v": 63290, "m": 115, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "Gmugc5XOVJw", "t": "어미는 아기를 강에 던졌다. 17년 후 아무도 예상치 못한 일이 일어나는데..", "d": "07-11", "h": 7, "ts": 1783723511.0, "v": 16863, "m": 91, "mt": 1, "tp": "기타"}, {"c": 9, "id": "wr_fouH9ltU", "t": "\"꼴도 보기 싫다!\" 남편이 첩을 들이자 시어머니 모시고 쫓겨난 현명한 며느리, 수십 년 숨겨온 시어머니의 비밀에 아들이 무너", "d": "07-11", "h": 14, "ts": 1783746006.0, "v": 45554, "m": 119, "mt": 1, "tp": "며느리·시집살이"}, {"c": 7, "id": "dl1pyx8lCQo", "t": "벌통 100개 들인 엉뚱한 며느리, 사라진 남편과 재산 노린 얄미운 시숙 소동기", "d": "07-11", "h": 16, "ts": 1783753235.0, "v": 34446, "m": 126, "mt": 1, "tp": "며느리·시집살이"}, {"c": 0, "id": "plGQsV94Re4", "t": "혼삿날신랑을 내쫓은 며느리, 집안이 발칵 뒤집혔지만 그 처자만 팔자 핀 이유", "d": "07-11", "h": 18, "ts": 1783760405.0, "v": 2845, "m": 109, "mt": 1, "tp": "며느리·시집살이"}, {"c": 5, "id": "YlOi7yqrlG0", "t": "왕이 죽었다고 소문이 나던 날 , 한 거지아이가 용포를 입은 죽어가던 사내를 발견하는데..", "d": "07-11", "h": 18, "ts": 1783762900.0, "v": 45304, "m": 106, "mt": 1, "tp": "꼬마·신동"}, {"c": 8, "id": "FCC0_Mw1f_A", "t": "“저 아씨를 내놓아라” 역적의 딸을 숨겨준 머슴의 최후", "d": "07-11", "h": 19, "ts": 1783766882.0, "v": 11714, "m": 100, "mt": 1, "tp": "거지·머슴·신분"}, {"c": 3, "id": "_9CGhialTiY", "t": "며느리 셋이 사라진 시댁에, 꼬마 신부가 웃으며 들어간 이유", "d": "07-11", "h": 19, "ts": 1783767009.0, "v": 61274, "m": 98, "mt": 1, "tp": "며느리·시집살이"}, {"c": 1, "id": "kgTg4eXGT7A", "t": "죽은 남편의 무덤을 찾아갔더니, 무덤 앞에는 죽었던 자식들이 있었다.", "d": "07-12", "h": 7, "ts": 1783809929.0, "v": 7535, "m": 92, "mt": 0, "tp": "과부·첩·부부"}, {"c": 6, "id": "tmkc91Uhwf8", "t": "시아버지 밥상에 재를 뿌린 거지 꼬마 며느리, 온 고을을 구해내다", "d": "07-12", "h": 10, "ts": 1783820737.0, "v": 1091, "m": 80, "mt": 0, "tp": "며느리·시집살이"}, {"c": 5, "id": "E6zeedDBRTk", "t": "\"세자는 죽지 않았습니다!!\" 세자의 장례식날, 한 관노소년이 그림을 든채 난입하는데 , 아이가 본 그날의 진실은?", "d": "07-12", "h": 17, "ts": 1783846442.0, "v": 3984, "m": 102, "mt": 0, "tp": "꼬마·신동"}, {"c": 0, "id": "wGj5QRCqzy8", "t": "“이제 이 궁에서 나가거라” 결혼하자마자 임금님이 어린첩을 들인 이유", "d": "07-12", "h": 18, "ts": 1783846822.0, "v": 20276, "m": 109, "mt": 0, "tp": "과부·첩·부부"}, {"c": 4, "id": "pC5Ov7N5Jsw", "t": "열녀문 때문에 강물에 빠진 마님을 건져낸 머슴, 그 후 죽은 줄 알았던 마님의 남편이 돌아오는데..", "d": "07-12", "h": 19, "ts": 1783851659.0, "v": 4930, "m": 128, "mt": 0, "tp": "과부·첩·부부"}, {"c": 5, "id": "9dFwC3fnN6k", "t": "\"그 약… 마시면 죽습니다!\" 소년이 왕의 잔을 소리치고 깨뜨려버린 진짜이유", "d": "07-13", "h": 6, "ts": 1783890039.0, "v": 4521, "m": 120, "mt": 0, "tp": "꼬마·신동"}, {"c": 2, "id": "kzA8VkE32Yg", "t": "시아버지가 맡긴 염소 열마리를 백마리로 만든 꼬마며느리", "d": "07-13", "h": 7, "ts": 1783893618.0, "v": 34465, "m": 82, "mt": 0, "tp": "며느리·시집살이"}, {"c": 1, "id": "_ib1tmt4jw4", "t": "대감의 소실이 된 거지 소녀, 친구를 조롱하더니 매일 밤 독초를 마시는데..", "d": "07-13", "h": 7, "ts": 1783896326.0, "v": 782, "m": 96, "mt": 0, "tp": "임금·어사·벼슬"}, {"c": 4, "id": "r9t0ovwLlt8", "t": "수상한 도사를 맨발로 도망치게 한 호랑이 시아버지와 못 말리는 꼬마 며느리, 온 고을을 살렸다", "d": "07-13", "h": 13, "ts": 1783916690.0, "v": 6792, "m": 101, "mt": 0, "tp": "며느리·시집살이"}, {"c": 9, "id": "ZO1GQVHYa-g", "t": "벙어리 시어머니를 절벽에 버리자 \"버려줘서 고맙다\" 웃으며 말하는데 뒤늦게 알게 된 진실", "d": "07-13", "h": 14, "ts": 1783918813.0, "v": 15139, "m": 118, "mt": 0, "tp": "며느리·시집살이"}, {"c": 7, "id": "cEaOHhkAV4c", "t": "미쳤다 손가락질받던 며느리가 길고양이 50마리를 키운 진짜 이유 야담", "d": "07-13", "h": 16, "ts": 1783926021.0, "v": 9075, "m": 131, "mt": 0, "tp": "며느리·시집살이"}, {"c": 0, "id": "BsGB6Sws6DE", "t": "“전하 이 길로 가시면 안됩니다!” 예지몽을 꾸고 임금의 행차를 가로막은 거지남매", "d": "07-13", "h": 18, "ts": 1783933217.0, "v": 4038, "m": 115, "mt": 0, "tp": "임금·어사·벼슬"}, {"c": 1, "id": "bvYgQ7TyJME", "t": "나를 쓰레기 더미에 버렸던 엄마, 거지로 변장하고 약방에 마주갔으나, 아들을 알아보지 못하고 하는 행동에 충격 먹는데...", "d": "07-13", "h": 18, "ts": 1783933237.0, "v": 1147, "m": 88, "mt": 0, "tp": "거지·머슴·신분"}, {"c": 5, "id": "_4Dbx43RtmY", "t": "시댁이 망한날 전재산들여 얼음 산 며느리 , 모두가 미쳤다는데 ..", "d": "07-13", "h": 18, "ts": 1783935002.0, "v": 1571, "m": 103, "mt": 0, "tp": "며느리·시집살이"}, {"c": 8, "id": "Oq-Zk2xxbkg", "t": "만석꾼 집에 시집간 열아홉 처녀, 첫날부터 모든 것이 이상했다", "d": "07-13", "h": 19, "ts": 1783939686.0, "v": 7198, "m": 117, "mt": 0, "tp": "며느리·시집살이"}, {"c": 3, "id": "GOcKJ-BcWLA", "t": "돌려 말하는 마을에 시집온 돌직구 며느리, 10년 묵은 비밀을 밝혀냈다!", "d": "07-13", "h": 19, "ts": 1783939834.0, "v": 5641, "m": 120, "mt": 0, "tp": "며느리·시집살이"}, {"c": 4, "id": "rtBRCSntiZ4", "t": "성격 급한 경상도 며느리가 충청도 노처녀 시누이의 중매에 나선 날", "d": "07-14", "h": 7, "ts": 1783980013.0, "v": 4822, "m": 110, "mt": 0, "tp": "며느리·시집살이"}, {"c": 5, "id": "FLv8ASKrGZI", "t": "시댁식구들이 관아에 모두잡혀가자 ,생긋 웃으며 전재산 팔아서 온 마을의 돌 빠짐없이 사 모은 민며느리", "d": "07-14", "h": 7, "ts": 1783981814.0, "v": 21655, "m": 93, "mt": 0, "tp": "며느리·시집살이"}, {"c": 1, "id": "uboGSFwVOCo", "t": "그녀는 완벽한 남자를 기다리며 모든 남자를 거절했다. 그러나 삶이 뜻밖의 시련을 가져다줄 줄은 꿈에도 몰랐다.", "d": "07-14", "h": 7, "ts": 1783982702.0, "v": 1312, "m": 101, "mt": 0, "tp": "기타"}, {"c": 3, "id": "SKlww64Os_Q", "t": "죽은 논을 살린 꼬마며느리, 땅속에서 나온 충격적인 비밀", "d": "07-14", "h": 19, "ts": 1784026229.0, "v": 8, "m": 107, "mt": 0, "tp": "며느리·시집살이"}], "topics": [{"name": "꼬마·신동", "n": 20, "med": 28332, "best_v": 175323, "best_t": "“한 번만 아버지인 척 해주세요\" 어린 누이까지 업고 온 소년, 알고 보니 그 사내는 임금이었다 그런데…", "best_id": "kX6nKebyGfA"}, {"name": "며느리·시집살이", "n": 86, "med": 25206, "best_v": 465114, "best_t": "김치를 빨랫줄에 널어놓는 며느리를 모두가 비웃었지만, 그 줄을 본 어사가 충격에 말을 잃은 이유", "best_id": "VDOppXMZuk8"}, {"name": "과부·첩·부부", "n": 33, "med": 19246, "best_v": 246500, "best_t": "\"비올때 장독을 뚜껑을 열어두세요.\" 망한 과부의 주막을 벼락부자로 만든 거지아이의 정체는?", "best_id": "AWk2eoC9zk8"}, {"name": "거지·머슴·신분", "n": 11, "med": 15326, "best_v": 60418, "best_t": "머슴을 서방으로 고른 양반집 딸의 진짜 이유", "best_id": "UNYpm0MPrhw"}, {"name": "임금·어사·벼슬", "n": 5, "med": 12157, "best_v": 30939, "best_t": "매일 뒷방에서 윷놀이만 하던 불량 고부, 고을 사또의 전 재산을 다 털어버린 사연", "best_id": "TpQEvqSG8JM"}, {"name": "기타", "n": 16, "med": 11134, "best_v": 67860, "best_t": "빚뿐이라 거짓말한 장인이 빈손인 척하자, 세 사위의 민낯이 드러났다", "best_id": "jl01Lqajrgc"}], "hits": [{"v": 465114, "t": "김치를 빨랫줄에 널어놓는 며느리를 모두가 비웃었지만, 그 줄을 본 어사가 충격에 말을 잃은 이유", "ch": "월하야담", "m": 110, "id": "VDOppXMZuk8", "tp": "며느리·시집살이", "thumb": "https://i.ytimg.com/vi/VDOppXMZuk8/mqdefault.jpg"}, {"v": 261802, "t": "거지 떼라 욕먹던 처녀를 며느리로 들인 시어머니의 소름 돋는 안목", "ch": "산골야담", "m": 108, "id": "SPAbLfafTAc", "tp": "며느리·시집살이", "thumb": "https://i.ytimg.com/vi/SPAbLfafTAc/mqdefault.jpg"}, {"v": 246500, "t": "\"비올때 장독을 뚜껑을 열어두세요.\" 망한 과부의 주막을 벼락부자로 만든 거지아이의 정체는?", "ch": "금향야담", "m": 68, "id": "AWk2eoC9zk8", "tp": "과부·첩·부부", "thumb": "https://i.ytimg.com/vi/AWk2eoC9zk8/mqdefault.jpg"}, {"v": 240513, "t": "시집온날 푸른벼를 베어버린 며느리, 집안을 벼락부자로 만들다", "ch": "밤마실야담", "m": 69, "id": "Iw_qBqt7cuA", "tp": "며느리·시집살이", "thumb": "https://i.ytimg.com/vi/Iw_qBqt7cuA/mqdefault.jpg"}, {"v": 175323, "t": "“한 번만 아버지인 척 해주세요\" 어린 누이까지 업고 온 소년, 알고 보니 그 사내는 임금이었다 그런데…", "ch": "월하야담", "m": 108, "id": "kX6nKebyGfA", "tp": "꼬마·신동", "thumb": "https://i.ytimg.com/vi/kX6nKebyGfA/mqdefault.jpg"}, {"v": 169078, "t": "못 걷는 아내를 깊은 산에 버리자, \"고마워요, 서방님\" 제 발로 일어서는데..", "ch": "월하야담", "m": 120, "id": "nAtDShragQ0", "tp": "과부·첩·부부", "thumb": "https://i.ytimg.com/vi/nAtDShragQ0/mqdefault.jpg"}, {"v": 132306, "t": "\"쉿, 나으리 병풍뒤에 누군가 있어요!\" 거지아이가 건넨 쪽지를 본 부잣집 대감님은 다음날...", "ch": "금향야담", "m": 65, "id": "1Lo7Cqbnh8U", "tp": "꼬마·신동", "thumb": "https://i.ytimg.com/vi/1Lo7Cqbnh8U/mqdefault.jpg"}, {"v": 130868, "t": "쫓기던 과부를 소달구지 속에 숨겨준 농부, 하루아침에 팔자가 뒤집혔다!", "ch": "송림야담", "m": 110, "id": "jKatQ6Gd__s", "tp": "과부·첩·부부", "thumb": "https://i.ytimg.com/vi/jKatQ6Gd__s/mqdefault.jpg"}, {"v": 127951, "t": "시아버지 비상금으로 오리 천 마리를 사 온 미친 며느리, 알고 보니 하늘이 보낸 복덩이였다", "ch": "뚱이야담", "m": 88, "id": "A7rNMRPivwI", "tp": "며느리·시집살이", "thumb": "https://i.ytimg.com/vi/A7rNMRPivwI/mqdefault.jpg"}, {"v": 126848, "t": "대를 끊는 년!\" 씨받이 들이자 오백 냥 품에 숨기고 쫓겨난 며느리, 마루 밑 종이 한 장에 적힌 비밀에 모두가 경악했다", "ch": "손녀야담", "m": 111, "id": "f-gmhYE6drQ", "tp": "며느리·시집살이", "thumb": "https://i.ytimg.com/vi/f-gmhYE6drQ/mqdefault.jpg"}, {"v": 123463, "t": "한 노부부가 귀신이 나오는 폐가를 세 냥에 샀을 때, 사람들은 웃었다. 그 폐가에는 숨겨진 방이 하나 있었는데..", "ch": "황도야담", "m": 143, "id": "-YE_lnBiHLI", "tp": "과부·첩·부부", "thumb": "https://i.ytimg.com/vi/-YE_lnBiHLI/mqdefault.jpg"}, {"v": 106904, "t": "“아버지, 정녕 저 노인에게 가라 하시옵니까?” 아비의 마지막 말에 70세 노인의 첫날밤 신부가 된 아씨", "ch": "월하야담", "m": 109, "id": "nXv77U-fni0", "tp": "과부·첩·부부", "thumb": "https://i.ytimg.com/vi/nXv77U-fni0/mqdefault.jpg"}], "hours": [{"h": 3, "n": 1, "med": 14364}, {"h": 5, "n": 9, "med": 41216}, {"h": 6, "n": 14, "med": 13773}, {"h": 7, "n": 28, "med": 21962}, {"h": 8, "n": 3, "med": 8266}, {"h": 9, "n": 8, "med": 28332}, {"h": 10, "n": 1, "med": 3836}, {"h": 11, "n": 1, "med": 69533}, {"h": 14, "n": 10, "med": 35228}, {"h": 16, "n": 13, "med": 17644}, {"h": 17, "n": 3, "med": 132306}, {"h": 18, "n": 31, "med": 18579}, {"h": 19, "n": 40, "med": 14250}, {"h": 20, "n": 3, "med": 41854}, {"h": 21, "n": 6, "med": 27772}], "allMedian": 19771, "nMature": 171, "totalMature": 6452558};
+const fmt = n => n >= 1e8 ? (n/1e8).toFixed(1)+'억' : n >= 1e4 ? (n/1e4).toFixed(n>=1e6?0:1)+'만' : n.toLocaleString();
+const CH_URL = id => `https://www.youtube.com/channel/${id}/videos`;
+const V_URL = id => `https://www.youtube.com/watch?v=${id}`;
+
+// ---- 1. 종합 성적표 ----
+(() => {
+  const rows = DATA.summary.map((s,i) => {
+    const stable = s.cv <= 1.2;
+    const badge = stable ? '<span class="badge" style="--bc:#2a78d6">안정형</span>' : '<span class="badge" style="--bc:#e34948">히트형</span>';
+    const nw = s.src === 'new' ? ' 🆕' : '';
+    return `<tr><td><b>${i+1}. <a class="chlink" href="${CH_URL(s.id)}" target="_blank">${s.name}</a></b>${nw}<br>${badge}</td>
+      <td><b>${fmt(s.total)}</b></td><td>${fmt(s.subs)}</td><td>${s.opened}</td><td>${s.n}개</td>
+      <td>${fmt(s.mean)}</td><td><b>${fmt(s.median)}</b></td><td>${s.cv.toFixed(2)}</td><td>${s.top10}%</td>
+      <td>${s.perday}개</td><td>${s.dur}분</td><td>${s.like.toFixed(2)}%</td></tr>`;
+  }).join('');
+  document.getElementById('mainTable').innerHTML =
+    `<thead><tr><th>채널</th><th>4주 총 조회수 ↓</th><th>구독자</th><th>개설</th><th>4주 영상</th><th>평균</th><th>중간값</th><th>기복(CV)</th><th>상위10% 비중</th><th>업로드/일</th><th>길이</th><th>좋아요율</th></tr></thead><tbody>${rows}</tbody>`;
+})();
+
+// ---- 2. 덤벨 (평균 vs 중간값) ----
+(() => {
+  const max = Math.max(...DATA.summary.map(s => s.mean));
+  const html = DATA.summary.map(s => {
+    const p1 = s.median/max*88, p2 = s.mean/max*88;
+    return `<div class="db-row"><div class="db-label">${s.name}</div><div class="db-track">
+      <div class="db-line" style="left:${Math.min(p1,p2)}%;width:${Math.abs(p2-p1)}%"></div>
+      <div class="db-dot db-med" style="left:${p1}%"></div><div class="db-dot db-mean" style="left:${p2}%"></div>
+      <div class="db-val" style="left:${Math.max(p1,p2)+2}%">${fmt(s.mean)} <span class="mut">/ 중간 ${fmt(s.median)}</span></div></div></div>`;
+  }).join('');
+  document.getElementById('dumbbell').innerHTML =
+    `<div class="legend"><span><i class="db-med" style="background:#86b6ef"></i>중간값</span><span><i style="background:var(--blue-d)"></i>평균</span></div>` + html;
+})();
+
+// ---- 3. 히트 구조 (스택 바) ----
+(() => {
+  const COLORS = ['#9a9890','#86b6ef','#2a78d6','#e34948'];
+  const LABELS = ['1천 미만','1천~1만','1만~10만','10만+'];
+  const html = DATA.summary.map(s => {
+    const tot = s.b.reduce((a,b)=>a+b,0);
+    const segs = s.b.map((n,i) => n === 0 ? '' :
+      `<div class="hs-seg" style="flex:${n};background:${COLORS[i]}"><span class="hs-lab ${i===1?'dark':''}">${n}</span></div>`).join('');
+    return `<div class="hs-row"><div class="db-label">${s.name}</div><div class="hs-bar">${segs}</div></div>`;
+  }).join('');
+  document.getElementById('buckets').innerHTML =
+    `<div class="legend">${LABELS.map((l,i)=>`<span><i style="background:${COLORS[i]};border-radius:3px"></i>${l}</span>`).join('')}</div>` + html;
+})();
+
+// ---- 4. 스캐터 타임라인 ----
+const tip = document.getElementById('tip');
+function showTip(e, html) { tip.innerHTML = html; tip.style.display='block';
+  tip.style.left = Math.min(e.clientX+12, innerWidth-360)+'px'; tip.style.top = (e.clientY+14)+'px'; }
+function hideTip() { tip.style.display='none'; }
+(() => {
+  const W=430, H=200, PL=44, PR=8, PT=10, PB=24;
+  const t0 = Math.min(...DATA.videos.map(v=>v.ts)), t1 = Math.max(...DATA.videos.map(v=>v.ts));
+  const vmax = Math.max(...DATA.videos.map(v=>v.v));
+  const grid = document.getElementById('scGrid');
+  DATA.summary.forEach((s, ci) => {
+    const vs = DATA.videos.filter(v => v.c === ci && v.mt);
+    const med = s.median;
+    ['log','lin'].forEach(mode => {
+      const y = v => mode==='log'
+        ? PT + (H-PT-PB) * (1 - (Math.log10(Math.max(v,100))-2) / (Math.log10(vmax)-2))
+        : PT + (H-PT-PB) * (1 - v/vmax);
+      const x = ts => PL + (W-PL-PR) * (ts-t0)/(t1-t0);
+      const ticks = mode==='log' ? [1e2,1e3,1e4,1e5] : [0, Math.round(vmax/2), vmax];
+      let svg = `<svg class="sc sc-${mode}" viewBox="0 0 ${W} ${H}">`;
+      ticks.forEach(t => { svg += `<line x1="${PL}" x2="${W-PR}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)" stroke-width="1"/>
+        <text class="tick" x="${PL-4}" y="${y(t)+3}" text-anchor="end">${fmt(t)}</text>`; });
+      svg += `<line x1="${PL}" x2="${W-PR}" y1="${y(med)}" y2="${y(med)}" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text class="tick medlab" x="${W-PR}" y="${y(med)-4}" text-anchor="end">중간 ${fmt(med)}</text>`;
+      vs.forEach(v => { svg += `<circle class="dot" cx="${x(v.ts)}" cy="${y(v.v)}" r="4" data-t="${v.t.replace(/"/g,'&quot;')}" data-v="${v.v}" data-d="${v.d}" data-m="${v.m}" data-id="${v.id}"/>`; });
+      [t0, (t0+t1)/2, t1].forEach(ts => {
+        const dd = new Date(ts*1000); svg += `<text class="tick" x="${x(ts)}" y="${H-8}" text-anchor="middle">${dd.getMonth()+1}/${dd.getDate()}</text>`; });
+      svg += '</svg>';
+      if (mode==='log') {
+        const div = document.createElement('div'); div.className = 'sc-card';
+        div.innerHTML = `<div class="sc-head"><b>${s.name}</b><span class="mut">${s.n}개 · 총 ${fmt(s.total)}</span></div>` + svg;
+        grid.appendChild(div);
+      } else {
+        grid.lastChild.insertAdjacentHTML('beforeend', svg);
+      }
+    });
+  });
+  grid.addEventListener('mousemove', e => {
+    const d = e.target.closest('.dot');
+    if (d) showTip(e, `<b>${fmt(+d.dataset.v)}회</b> · ${d.dataset.m}분 · ${d.dataset.d}<br>${d.dataset.t}`);
+    else hideTip();
+  });
+  grid.addEventListener('mouseleave', hideTip);
+  grid.addEventListener('click', e => {
+    const d = e.target.closest('.dot'); if (d) window.open(V_URL(d.dataset.id), '_blank');
+  });
+  document.querySelectorAll('.scale-toggle button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('.scale-toggle button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    grid.querySelectorAll('.sc-log').forEach(s => s.style.display = b.dataset.s==='log'?'block':'none');
+    grid.querySelectorAll('.sc-lin').forEach(s => s.style.display = b.dataset.s==='lin'?'block':'none');
+  });
+  grid.querySelectorAll('.sc-lin').forEach(s => s.style.display='none');
+})();
+
+// ---- 5. 소재 차트 ----
+(() => {
+  const max = Math.max(...DATA.topics.map(t=>t.med));
+  const html = DATA.topics.map(t => `<div class="hs-row"><div class="db-label">${t.name}</div>
+    <div class="tbar-wrap" style="flex:1"><div class="tbar" style="width:${t.med/max*70}%"></div>
+    <span>${fmt(t.med)} <span class="mut">(${t.n}개)</span></span></div></div>`).join('');
+  document.getElementById('topicChart').innerHTML = html +
+    `<p class="mut" style="margin-top:8px">전체 중간값 ${fmt(DATA.allMedian)} · 각 소재 최고 영상: ` +
+    DATA.topics.map(t=>`${t.name.split('·')[0]} <a class="chlink" href="${V_URL(t.best_id)}" target="_blank">${fmt(t.best_v)}</a>`).join(' · ') + '</p>';
+})();
+
+// ---- 6. 히트 리스트 ----
+(() => {
+  document.getElementById('hitList').innerHTML = DATA.hits.map(h =>
+    `<li><a href="${V_URL(h.id)}" target="_blank"><img src="${h.thumb}" loading="lazy" alt=""></a>
+     <div><span class="hit-topic">${h.tp}</span><b>${fmt(h.v)}</b> · ${h.ch} · ${h.m}분<br>
+     <a href="${V_URL(h.id)}" target="_blank">${h.t}</a></div></li>`).join('');
+})();
+
+// ---- 7. 길이 표 ----
+(() => {
+  const B = [[30,60],[60,90],[90,120],[120,999]];
+  const rows = B.map(([lo,hi]) => {
+    const arr = DATA.videos.filter(v => v.mt && v.m >= lo && v.m < hi);
+    if (!arr.length) return '';
+    const med = arr.map(v=>v.v).sort((a,b)=>a-b)[Math.floor(arr.length/2)];
+    return `<tr><td>${lo}~${hi===999?'':hi}분${hi===999?'+':''}</td><td>${arr.length}개</td><td>${Math.round(arr.length/DATA.nMature*100)}%</td><td><b>${fmt(med)}</b></td></tr>`;
+  }).join('');
+  document.getElementById('durTable').innerHTML =
+    `<thead><tr><th>길이 구간</th><th>영상 수</th><th>비중</th><th>조회수 중간값</th></tr></thead><tbody>${rows}</tbody>`;
+})();
+
+// ---- 7b. 길이 × 조회수 산점도 ----
+(() => {
+  const W=940, H=320, PL=56, PR=16, PT=14, PB=30;
+  const vs = DATA.videos.filter(v => v.mt);
+  const stable = DATA.summary.map(s => s.cv <= 1.2);
+  const m0=40, m1=170;
+  const ymin=3, ymax=Math.log10(Math.max(...vs.map(v=>v.v)))+0.1;
+  const x = m => PL + (W-PL-PR)*(m-m0)/(m1-m0);
+  const y = v => PT + (H-PT-PB)*(1-(Math.log10(Math.max(v,1000))-ymin)/(ymax-ymin));
+  let svg = `<svg viewBox="0 0 ${W} ${H}" class="sc">`;
+  [[1e3,'1천'],[1e4,'1만'],[1e5,'10만']].forEach(([t,lab]) => { svg += `<line x1="${PL}" x2="${W-PR}" y1="${y(t)}" y2="${y(t)}" stroke="var(--grid)"/><text class="tick" x="${PL-6}" y="${y(t)+3}" text-anchor="end">${lab}</text>`; });
+  [60,80,100,120,140,160].forEach(m => { svg += `<text class="tick" x="${x(m)}" y="${H-10}" text-anchor="middle">${m}분</text>`; });
+  vs.forEach(v => { svg += `<circle class="dot" style="fill:${stable[v.c]?'var(--blue)':'var(--red)'}" cx="${x(v.m).toFixed(1)}" cy="${y(v.v).toFixed(1)}" r="4.5" data-t="${v.t.replace(/"/g,'&quot;')}" data-v="${v.v}" data-m="${v.m}" data-ch="${DATA.summary[v.c].name}" data-id="${v.id}"/>`; });
+  const pts=[];
+  for (let lo=40; lo<170; lo+=15) {
+    const arr = vs.filter(v=>v.m>=lo && v.m<lo+15).map(v=>v.v).sort((a,b)=>a-b);
+    if (arr.length>=7) pts.push([lo+7.5, arr[Math.floor(arr.length/2)]]);
+  }
+  svg += `<polyline points="${pts.map(p=>`${x(p[0]).toFixed(1)},${y(p[1]).toFixed(1)}`).join(' ')}" fill="none" stroke="var(--ink)" stroke-width="2.5"/>`;
+  pts.forEach(p => { svg += `<circle cx="${x(p[0]).toFixed(1)}" cy="${y(p[1]).toFixed(1)}" r="5" fill="var(--ink)" stroke="var(--surface)" stroke-width="2"/><text class="tick" style="fill:var(--ink);font-weight:700;paint-order:stroke;stroke:var(--surface);stroke-width:3px" x="${x(p[0]).toFixed(1)}" y="${(y(p[1])-11).toFixed(1)}" text-anchor="middle">${fmt(p[1])}</text>`; });
+  svg += '</svg>';
+  const el = document.getElementById('durScatter');
+  el.innerHTML = svg;
+  el.addEventListener('mousemove', e => { const d=e.target.closest('.dot');
+    if (d) showTip(e, `<b>${fmt(+d.dataset.v)}회</b> · ${d.dataset.m}분 · ${d.dataset.ch}<br>${d.dataset.t}`); else hideTip(); });
+  el.addEventListener('mouseleave', hideTip);
+  el.addEventListener('click', e => { const d=e.target.closest('.dot'); if(d) window.open(V_URL(d.dataset.id),'_blank'); });
+})();
+
+// ---- 7c. 채널 내 짧은 절반 vs 긴 절반 ----
+(() => {
+  const med = a => a.length ? a.map(v=>v.v).sort((x,y)=>x-y)[Math.floor(a.length/2)] : 0;
+  const rows = DATA.summary.map((s,ci) => {
+    const arr = DATA.videos.filter(v=>v.c===ci && v.mt).sort((a,b)=>a.m-b.m);
+    const half = Math.floor(arr.length/2);
+    const sm = med(arr.slice(0,half)), lm = med(arr.slice(arr.length-half));
+    const long = lm > sm;
+    return `<tr><td>${s.name}</td><td>${arr[0].m}~${arr[arr.length-1].m}분</td>
+      <td>${long?fmt(sm):`<b>${fmt(sm)}</b>`}</td><td>${long?`<b>${fmt(lm)}</b>`:fmt(lm)}</td>
+      <td><b style="color:${long?'var(--blue)':'var(--red)'}">${long?'긴 쪽 승':'짧은 쪽 승'}</b></td></tr>`;
+  }).join('');
+  document.getElementById('durChTable').innerHTML =
+    `<thead><tr><th>채널</th><th>길이 범위</th><th>짧은 절반</th><th>긴 절반</th><th>결과</th></tr></thead><tbody>${rows}</tbody>`;
+})();
+
+// ---- 8. 시간대 ----
+(() => {
+  const max = Math.max(...DATA.hours.map(h=>h.n));
+  document.getElementById('hourChart').innerHTML = DATA.hours.map(h =>
+    `<div class="hs-row" style="padding:2px 0"><div class="db-label" style="width:44px">${String(h.h).padStart(2,'0')}시</div>
+     <div class="tbar-wrap" style="flex:1"><div class="tbar" style="width:${h.n/max*70}%;height:11px"></div>
+     <span style="font-weight:600;font-size:.75rem">${h.n}개 <span class="mut">중간 ${fmt(h.med)}</span></span></div></div>`).join('');
+})();
+</script>
+</body>
+</html>
